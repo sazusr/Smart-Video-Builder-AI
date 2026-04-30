@@ -7,8 +7,8 @@ export default function Navbar({ user, profile }: { user: User | null, profile: 
   return (
     <header className="h-16 border-b border-slate-800 flex items-center justify-between px-8 bg-slate-900/30 backdrop-blur-md sticky top-0 z-10">
       <div className="flex items-center gap-4">
-        <span className="text-sm text-slate-500">Smart Video Builder /</span>
-        <span className="text-sm font-medium text-white">Dashboard</span>
+        <span className="text-sm text-slate-500">স্মার্ট ভিডিও বিল্ডার /</span>
+        <span className="text-sm font-medium text-white">ড্যাশবোর্ড</span>
       </div>
 
       <div className="flex items-center gap-6">
@@ -16,7 +16,7 @@ export default function Navbar({ user, profile }: { user: User | null, profile: 
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
           <input 
             type="text" 
-            placeholder="Search assets..." 
+            placeholder="সার্চ করুন..." 
             className="w-[240px] bg-white/5 border border-white/10 rounded-lg py-1.5 pl-10 pr-4 text-xs focus:outline-none focus:border-primary/50 transition-colors"
           />
         </div>
@@ -29,7 +29,9 @@ export default function Navbar({ user, profile }: { user: User | null, profile: 
         <div className="flex items-center gap-3 pl-4 border-l border-white/10">
           <div className="text-right hidden sm:block">
             <p className="text-xs font-bold text-white">{profile?.email.split('@')[0]}</p>
-            <p className="text-[10px] text-slate-500 uppercase tracking-tighter">{profile?.role}</p>
+            <p className="text-[10px] text-slate-500 uppercase tracking-tighter">
+              {profile?.role === 'admin' ? 'অ্যাডমিন' : (profile?.email?.split('@')[0] || 'ইউজার')}
+            </p>
           </div>
           <div className="w-8 h-8 rounded-full bg-slate-700 border border-slate-600 flex items-center justify-center text-slate-300">
             <UserIcon size={16} />

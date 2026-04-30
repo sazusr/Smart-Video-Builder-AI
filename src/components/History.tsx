@@ -57,13 +57,13 @@ export default function History() {
 
   const deleteRecord = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm('Are you sure you want to delete this generation?')) return;
+    if (!confirm('আপনি কি নিশ্চিত যে আপনি এটি ডিলিট করতে চান?')) return;
     try {
       await deleteDoc(doc(db, 'content', id));
-      toast.success('Generation deleted');
+      toast.success('ডিলিট করা হয়েছে');
       if (selectedItem?.id === id) setSelectedItem(null);
     } catch (error) {
-      toast.error('Failed to delete');
+      toast.error('ডিলিট করতে ব্যর্থ হয়েছে');
     }
   };
 
@@ -75,14 +75,14 @@ export default function History() {
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-display font-bold tracking-tight text-white leading-tight">Production History</h1>
-          <p className="text-slate-400 font-medium font-sans">Manage and revisit your past video systems.</p>
+          <h1 className="text-3xl font-display font-bold tracking-tight text-white leading-tight">প্রোডাকশন হিস্ট্রি</h1>
+          <p className="text-slate-400 font-medium font-sans">আপনার পূর্ববর্তী ভিডিও সিস্টেমগুলো পরিচালনা করুন এবং পুনরায় দেখুন।</p>
         </div>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-4 h-4" />
           <input 
             type="text"
-            placeholder="Search topics..."
+            placeholder="টপিক খুঁজুন..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-xs focus:outline-none focus:border-primary/50 transition-colors w-[240px]"
@@ -139,7 +139,7 @@ export default function History() {
           {filteredHistory.length === 0 && !loading && (
             <div className="py-20 text-center opacity-40">
               <HistoryIcon size={48} className="mx-auto mb-4 text-slate-600" />
-              <p className="font-semibold text-slate-400">No history found</p>
+              <p className="font-semibold text-slate-400">কোনো হিস্ট্রি পাওয়া যায়নি</p>
             </div>
           )}
         </div>
@@ -158,36 +158,36 @@ export default function History() {
                 <div className="p-6 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
-                    <h2 className="text-sm font-bold text-white uppercase tracking-widest">Snapshot Preview</h2>
+                    <h2 className="text-sm font-bold text-white uppercase tracking-widest">স্ন্যাপশট প্রিভিউ</h2>
                   </div>
                   <button 
                     className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[10px] font-bold text-slate-400 hover:bg-white/10 transition-colors uppercase"
                     onClick={() => toast.error('Editor mode coming soon')}
                   >
-                    Open in Editor
+                    এডিটরে খুলুন
                     <ExternalLink size={12} />
                   </button>
                 </div>
 
                 <div className="p-8 space-y-8 overflow-y-auto max-h-[600px] custom-scrollbar">
                   <div>
-                    <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest block mb-2">Original Topic</span>
+                    <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest block mb-2">মূল টপিক</span>
                     <h4 className="text-xl font-bold text-white leading-tight">{selectedItem.videoTopic}</h4>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
-                      <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Title Strategy</span>
+                      <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1">টাইটেল কৌশল</span>
                       <p className="text-sm font-medium text-slate-200">{selectedItem.results.title}</p>
                     </div>
                     <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
-                      <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1">Production Tone</span>
+                      <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest block mb-1">প্রোডাকশন টোন</span>
                       <p className="text-sm font-medium text-slate-200">{selectedItem.results.analytics.tone}</p>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest block">Script Preview</span>
+                    <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest block">স্ক্রিপ্ট প্রিভিউ</span>
                     <div className="space-y-6">
                       <p className="text-sm text-slate-300 leading-relaxed"><span className="text-purple-400 font-bold mr-2 uppercase text-[10px]">[Hook]</span>{selectedItem.results.script.hook}</p>
                       <p className="text-sm text-slate-300 leading-relaxed"><span className="text-blue-400 font-bold mr-2 uppercase text-[10px]">[Intro]</span>{selectedItem.results.script.intro}</p>

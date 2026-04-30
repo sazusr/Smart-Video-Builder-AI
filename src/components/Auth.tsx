@@ -22,10 +22,10 @@ export default function Auth() {
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
-        toast.success('Welcome back!');
+        toast.success('আপনাকে স্বাগতম!');
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
-        toast.success('Account created successfully!');
+        toast.success('অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!');
       }
     } catch (error: any) {
       if (error.code === 'auth/operation-not-allowed') {
@@ -42,7 +42,7 @@ export default function Auth() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      toast.success('Signed in with Google!');
+      toast.success('গুগল দিয়ে সাইন ইন করা হয়েছে!');
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -63,10 +63,10 @@ export default function Auth() {
             <PlayCircle className="text-white w-9 h-9" />
           </div>
           <h2 className="text-3xl font-display font-bold mb-2 tracking-tight">
-            {isLogin ? 'Welcome Back' : 'Get Started'}
+            {isLogin ? 'আপনাকে স্বাগতম' : 'শুরু করুন'}
           </h2>
           <p className="text-slate-500">
-            {isLogin ? 'Log in to continue creating content' : 'Create an account to start generating videos'}
+            {isLogin ? 'কন্টেন্ট তৈরি চালিয়ে যেতে লগইন করুন' : 'ভিডিও তৈরি শুরু করতে একটি অ্যাকাউন্ট তৈরি করুন'}
           </p>
         </div>
 
@@ -77,18 +77,18 @@ export default function Auth() {
               className="w-full py-3 rounded-xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-all flex items-center justify-center gap-3"
             >
               <Chrome size={20} className="text-blue-400" />
-              Continue with Google
+              গুগল দিয়ে চালিয়ে যান
             </button>
             <div className="flex items-center gap-4">
               <div className="h-[1px] flex-1 bg-white/10"></div>
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none">OR EMAIL</span>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none">অথবা ইমেইল</span>
               <div className="h-[1px] flex-1 bg-white/10"></div>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1.5 ml-1">Email Address</label>
+              <label className="block text-sm font-medium text-slate-400 mb-1.5 ml-1">ইমেইল অ্যাড্রেস</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
                 <input 
@@ -103,7 +103,7 @@ export default function Auth() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-400 mb-1.5 ml-1">Password</label>
+              <label className="block text-sm font-medium text-slate-400 mb-1.5 ml-1">পাসওয়ার্ড</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
                 <input 
@@ -126,7 +126,7 @@ export default function Auth() {
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
                 <>
-                  {isLogin ? 'Sign In' : 'Create Account'}
+                  {isLogin ? 'সাইন ইন' : 'অ্যাকাউন্ট তৈরি করুন'}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </>
               )}
@@ -137,12 +137,12 @@ export default function Auth() {
               onClick={async () => {
                 setEmail('freelancersazu3@gmail.com');
                 setPassword('Sazu807#');
-                toast.success('Demo credentials filled!');
+                toast.success('ডেমো তথ্য পূরণ করা হয়েছে!');
               }}
               className="w-full py-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-300 font-bold hover:bg-purple-500/20 transition-all flex items-center justify-center gap-2"
             >
               <UserIcon size={18} className="text-primary" />
-              Use My Account Details
+              আমার অ্যাকাউন্টের বিবরণ ব্যবহার করুন
             </button>
           </form>
 
@@ -151,7 +151,7 @@ export default function Auth() {
               onClick={() => setIsLogin(!isLogin)}
               className="text-sm font-medium text-slate-400 hover:text-primary transition-colors"
             >
-              {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
+              {isLogin ? "অ্যাকাউন্ট নেই? সাইন আপ করুন" : "ইতিমধ্যেই অ্যাকাউন্ট আছে? সাইন ইন করুন"}
             </button>
           </div>
         </div>

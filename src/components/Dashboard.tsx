@@ -13,7 +13,8 @@ import {
   Check,
   PlayCircle,
   AlertCircle,
-  Shield
+  Shield,
+  Upload
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
@@ -50,6 +51,25 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<VideoContent | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('audio/')) {
+      toast.error('Please upload an audio file');
+      return;
+    }
+
+    toast.success(`Voice file "${file.name}" uploaded. Processing...`);
+    // In a real app, you'd send this to a transcription service
+    // For now, we'll just set a placeholder message
+    setTopic(`Audio Transcript for ${file.name}: [AI Processing...]`);
+    
+    // Auto-generate if it were a real transcription
+    // handleGenerate();
+  };
 
   useEffect(() => {
     // Initialization if needed
@@ -60,7 +80,7 @@ export default function Dashboard() {
     if (!topic.trim()) return;
     const isSuperAdmin = user?.email === 'freelancersazu3@gmail.com';
     if (profile?.status !== 'active' && !isSuperAdmin) {
-      toast.error('Your account is not active. Please wait for admin approval.');
+      toast.error('আপনার অ্যাকাউন্ট সক্রিয় নয়। দয়া করে অ্যাডমিনের অনুমোদনের জন্য অপেক্ষা করুন।');
       return;
     }
 
@@ -86,10 +106,10 @@ export default function Dashboard() {
         handleFirestoreError(err, OperationType.WRITE, path);
       }
       
-      toast.success('Content generated successfully!');
+      toast.success('কন্টেন্ট সফলভাবে তৈরি হয়েছে!');
     } catch (error: any) {
       console.error(error);
-      toast.error('Failed to generate content. Please try again.');
+      toast.error('কন্টেন্ট তৈরি করতে ব্যর্থ হয়েছে। দয়া করে আবার চেষ্টা করুন।');
     } finally {
       setLoading(false);
     }
@@ -98,7 +118,7 @@ export default function Dashboard() {
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
     setCopiedField(field);
-    toast.success('Copied to clipboard');
+    toast.success('ক্লিপবোর্ডে কপি হয়েছে');
     setTimeout(() => setCopiedField(null), 2000);
   };
 
@@ -124,7 +144,7 @@ Outro: ${result.script.outro}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-display font-extrabold tracking-tight text-white leading-tight">AI Content Production</h1>
+            <h1 className="text-3xl font-display font-extrabold tracking-tight text-white leading-tight">এআই কন্টেন্ট প্রোডাকশন</h1>
             {user?.email === 'freelancersazu3@gmail.com' && (
               <Link 
                 to="/admin" 
@@ -135,7 +155,7 @@ Outro: ${result.script.outro}
               </Link>
             )}
           </div>
-          <p className="text-slate-400 font-medium">Craft viral video systems with our advanced SEO engine.</p>
+          <p className="text-slate-400 font-medium">আমাদের উন্নত SEO ইঞ্জিনের মাধ্যমে ভাইরাল ভিডিও সিস্টেম তৈরি করুন।</p>
         </div>
       </div>
 
@@ -147,22 +167,33 @@ Outro: ${result.script.outro}
           </div>
           <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6 flex items-center gap-2">
             <Mic size={14} />
-            What are you creating today?
+            আজ আপনি কি তৈরি করছেন?
           </h3>
           
           <form onSubmit={handleGenerate} className="space-y-4">
             <textarea 
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="Paste a title, topic, or transcript here..."
+              placeholder="এখানে টাইটেল, টপিক বা ট্রান্সক্রিপ্ট পেস্ট করুন..."
               className="w-full bg-transparent border-none text-xl font-medium text-white placeholder-slate-700 resize-none focus:ring-0 min-h-[100px]"
             />
             
             <div className="flex flex-wrap items-center justify-between pt-2 gap-4 border-t border-white/5">
               <div className="flex gap-2">
-                <button type="button" className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 hover:bg-white/10 transition-colors">
-                  <Mic size={14} />
-                  Voice Input
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handleFileUpload} 
+                  accept="audio/*" 
+                  className="hidden" 
+                />
+                <button 
+                  type="button" 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 hover:bg-white/10 transition-colors"
+                >
+                  <Upload size={14} />
+                  ভয়েস আপলোড
                 </button>
                 <div className="flex bg-white/5 border border-white/10 rounded-lg p-0.5">
                   <button 
@@ -187,7 +218,7 @@ Outro: ${result.script.outro}
                 disabled={loading || !topic}
                 className="px-8 py-2.5 rounded-xl gradient-btn text-white font-bold text-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? <RefreshCw className="animate-spin" size={16} /> : <><Sparkles size={16} /> Generate Assets</>}
+                {loading ? <RefreshCw className="animate-spin" size={16} /> : <><Sparkles size={16} /> কন্টেন্ট তৈরি করুন</>}
               </button>
             </div>
           </form>
@@ -195,12 +226,12 @@ Outro: ${result.script.outro}
 
         {/* Quick Insights */}
         <div className="bg-slate-900/50 rounded-2xl p-6 border border-white/5 flex flex-col gap-4 ring-1 ring-white/5">
-          <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest">AI Insights</h3>
+          <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest">এআই ইনসাইটস</h3>
           <div className="flex flex-col gap-3">
             <div className="p-3.5 rounded-xl bg-blue-500/5 border border-blue-500/20">
-              <div className="text-[10px] text-blue-400 mb-1 font-bold uppercase tracking-wider">Detected Tone</div>
+              <div className="text-[10px] text-blue-400 mb-1 font-bold uppercase tracking-wider">ডিটেক্টেড টোন</div>
               <div className="text-sm text-blue-100 font-medium">
-                {result ? result.analytics.tone : 'No analysis yet'}
+                {result ? result.analytics.tone : 'এখনও কোনো বিশ্লেষণ নেই'}
               </div>
             </div>
           </div>
@@ -218,7 +249,7 @@ Outro: ${result.script.outro}
             {/* Left: Metadata Assets */}
             <div className="col-span-12 lg:col-span-5 flex flex-col gap-6">
               <ResultCard 
-                title="SEO Optimized Title" 
+                title="SEO অপ্টিমাইজড টাইটেল" 
                 icon={<BarChart3 size={14} />} 
                 content={result.title}
                 onCopy={() => copyToClipboard(result.title, 'title')}
@@ -226,7 +257,7 @@ Outro: ${result.script.outro}
               />
 
               <ResultCard 
-                title="Growth Tags" 
+                title="গ্রোথ ট্যাগ" 
                 icon={<Tag size={14} />} 
                 content={result.tags.join(', ')}
                 onCopy={() => copyToClipboard(result.tags.join(', '), 'tags')}
@@ -238,24 +269,24 @@ Outro: ${result.script.outro}
                 <div className="flex justify-between items-center mb-4">
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                     <ImageIcon size={14} className="text-purple-400" />
-                    Thumbnail Blueprint
+                    থাম্বনেইল ব্লুপ্রিন্ট
                   </h4>
                   <button 
                     onClick={() => copyToClipboard(result.thumbnailPrompt, 'thumb-p')}
                     className="text-[10px] text-purple-400 font-bold uppercase hover:text-purple-300 transition-colors"
                   >
-                    {copiedField === 'thumb-p' ? 'Copied!' : 'Copy Prompt'}
+                    {copiedField === 'thumb-p' ? 'কপি হয়েছে!' : 'প্রম্পট কপি করুন'}
                   </button>
                 </div>
                 <p className="text-sm text-slate-300 leading-relaxed font-medium mb-6">
                   {result.thumbnailIdea}
                 </p>
                 <div className="mt-auto p-3 rounded-xl bg-black/20 border border-white/5">
-                  <p className="text-[9px] font-bold uppercase text-slate-500 mb-1">DALL-E Prompt</p>
+                  <p className="text-[9px] font-bold uppercase text-slate-500 mb-1">ডাল-ই প্রম্পট</p>
                   <p className="text-[11px] text-primary/80 italic line-clamp-2">{result.thumbnailPrompt}</p>
                 </div>
                 <button className="mt-4 w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-[10px] uppercase font-bold text-slate-300 hover:bg-white/10 transition-colors">
-                  Generate AI Image Preview
+                  এআই ইমেজ প্রিভিউ জেনারেট করুন
                 </button>
               </div>
             </div>
@@ -266,7 +297,7 @@ Outro: ${result.script.outro}
                 <div className="p-4 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                     <FileText size={14} className="text-blue-400" />
-                    Full Production Script
+                    সম্পূর্ণ প্রোডাকশন স্ক্রিপ্ট
                   </h4>
                   <div className="flex gap-2">
                     <button 
@@ -276,9 +307,9 @@ Outro: ${result.script.outro}
                         copiedField === 'all' ? "bg-green-600" : "bg-purple-600 hover:bg-purple-500"
                       )}
                     >
-                      {copiedField === 'all' ? 'Copied' : 'Copy Full Assets'}
+                      {copiedField === 'all' ? 'কপি হয়েছে' : 'সব কন্টেন্ট কপি করুন'}
                     </button>
-                    <button className="px-3 py-1 bg-white/10 rounded text-[10px] font-bold text-slate-300 hover:bg-white/20 transition-colors">Export .DOC</button>
+                    <button className="px-3 py-1 bg-white/10 rounded text-[10px] font-bold text-slate-300 hover:bg-white/20 transition-colors">.DOC এক্সপোর্ট করুন</button>
                   </div>
                 </div>
                 <div className="flex-1 p-8 space-y-8 overflow-y-auto max-h-[600px] custom-scrollbar">
@@ -298,8 +329,8 @@ Outro: ${result.script.outro}
           <div className="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-6">
             <Sparkles size={40} className="text-primary" />
           </div>
-          <h2 className="text-xl font-display font-bold mb-2">Ready to create?</h2>
-          <p className="max-w-xs mx-auto">Enter a topic above and watch the AI work its magic.</p>
+          <h2 className="text-xl font-display font-bold mb-2">তৈরি করতে প্রস্তুত?</h2>
+          <p className="max-w-xs mx-auto">উপরে একটি টপিক লিখুন এবং এআই-এর জাদু দেখুন।</p>
         </div>
       )}
 
@@ -307,8 +338,8 @@ Outro: ${result.script.outro}
         <div className="py-20 space-y-8">
           <div className="max-w-md mx-auto text-center space-y-4">
              <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-             <p className="text-xl font-bold font-display animate-pulse">Analyzing your topic...</p>
-             <p className="text-slate-500 text-sm italic">"Our AI is crafting the perfect SEO strategy for you. Just a moment..."</p>
+             <p className="text-xl font-bold font-display animate-pulse">আপনার টপিক বিশ্লেষণ করা হচ্ছে...</p>
+             <p className="text-slate-500 text-sm italic">"আমাদের এআই আপনার জন্য নিখুঁত SEO কৌশল তৈরি করছে। সামান্য অপেক্ষা করুন..."</p>
           </div>
         </div>
       )}

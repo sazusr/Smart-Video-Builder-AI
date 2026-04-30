@@ -14,7 +14,7 @@ export default function TrendingIdeas() {
       const data = await generateTrendingIdeas(9);
       setIdeas(data);
     } catch (error) {
-      toast.error('Failed to fetch trending ideas');
+      toast.error('ট্রেন্ডিং আইডিয়াস আনতে ব্যর্থ হয়েছে');
     } finally {
       setLoading(false);
     }
@@ -26,15 +26,15 @@ export default function TrendingIdeas() {
 
   const copyIdea = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success('Topic copied to clipboard');
+    toast.success('টপিক কপি করা হয়েছে');
   };
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-display font-bold tracking-tight">Trending Ideas</h1>
-          <p className="text-slate-400">Discover what's viral across social platforms.</p>
+          <h1 className="text-3xl font-display font-bold tracking-tight">ট্রেন্ডিং আইডিয়াস</h1>
+          <p className="text-slate-400">সোশ্যাল প্ল্যাটফর্ম জুড়ে কী ভাইরাল হচ্ছে তা আবিষ্কার করুন।</p>
         </div>
         <button 
           onClick={fetchIdeas}
@@ -42,7 +42,7 @@ export default function TrendingIdeas() {
           className="gradient-btn px-6 py-3 rounded-xl text-white font-bold flex items-center gap-2"
         >
           {loading ? <RefreshCw className="animate-spin" size={18} /> : <Sparkles size={18} />}
-          Refresh Trends
+          ট্রেন্ড রিফ্রেশ করুন
         </button>
       </div>
 

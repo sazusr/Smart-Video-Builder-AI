@@ -54,28 +54,28 @@ export default function AdminPanel() {
   const updateUserStatus = async (uid: string, status: 'active' | 'blocked' | 'pending') => {
     try {
       await updateDoc(doc(db, 'users', uid), { status });
-      toast.success(`User set to ${status}`);
+      toast.success(`ইউজার স্ট্যাটাস ${status} এ সেট করা হয়েছে`);
     } catch (error) {
-      toast.error('Failed to update user status');
+      toast.error('ইউজার স্ট্যাটাস আপডেট করতে ব্যর্থ হয়েছে');
     }
   };
 
   const promoteToAdmin = async (uid: string) => {
     try {
       await updateDoc(doc(db, 'users', uid), { role: 'admin' });
-      toast.success('User promoted to admin');
+      toast.success('ইউজারকে অ্যাডমিন হিসেবে প্রোমোট করা হয়েছে');
     } catch (error) {
-      toast.error('Failed to promote user');
+      toast.error('প্রোমোট করতে ব্যর্থ হয়েছে');
     }
   };
 
   const deleteUser = async (uid: string) => {
-    if (!window.confirm('Are you sure you want to delete this user? This cannot be undone.')) return;
+    if (!window.confirm('আপনি কি নিশ্চিত যে এই ইউজারকে ডিলিট করতে চান? এটি ফিরে পাওয়া যাবে না।')) return;
     try {
       await deleteDoc(doc(db, 'users', uid));
-      toast.success('User deleted successfully');
+      toast.success('ইউজার সফলভাবে ডিলিট করা হয়েছে');
     } catch (error) {
-      toast.error('Failed to delete user');
+      toast.error('ইউজার ডিলিট করতে ব্যর্থ হয়েছে');
     }
   };
 
@@ -83,23 +83,23 @@ export default function AdminPanel() {
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-display font-bold tracking-tight">Admin Dashboard</h1>
-          <p className="text-slate-400">Manage platform users and monitor production activity.</p>
+          <h1 className="text-3xl font-display font-bold tracking-tight">অ্যাডমিন ড্যাশবোর্ড</h1>
+          <p className="text-slate-400">প্ল্যাটফর্মের ব্যবহারকারী পরিচালনা করুন এবং প্রোডাকশন কার্যক্রম পর্যবেক্ষণ করুন।</p>
         </div>
         <Link 
           to="/dashboard" 
           className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-bold hover:bg-white/10 transition-all w-fit"
         >
           <LayoutDashboard size={18} className="text-primary" />
-          Dashboard
+          ড্যাশবোর্ড
         </Link>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatCard title="Total Users" value={users.length} icon={<Users size={20} />} color="text-blue-400" />
-        <StatCard title="Total Productions" value={contentCount} icon={<PlayCircle size={20} />} color="text-purple-400" />
-        <StatCard title="System Node" value="Bangkok-01" icon={<Activity size={20} />} color="text-green-400" />
+        <StatCard title="মোট ব্যবহারকারী" value={users.length} icon={<Users size={20} />} color="text-blue-400" />
+        <StatCard title="মোট প্রোডাকশন" value={contentCount} icon={<PlayCircle size={20} />} color="text-purple-400" />
+        <StatCard title="সিস্টেম নোড" value="Bangkok-01" icon={<Activity size={20} />} color="text-green-400" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -108,18 +108,18 @@ export default function AdminPanel() {
           <div className="p-6 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
             <h3 className="font-display font-bold text-lg flex items-center gap-2">
               <ShieldCheck size={18} className="text-purple-400" />
-              Registry Management
+              রেজিস্ট্রি ম্যানেজমেন্ট
             </h3>
-            <span className="bg-purple-500/10 text-purple-400 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest border border-purple-500/10">Active Session</span>
+            <span className="bg-purple-500/10 text-purple-400 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest border border-purple-500/10">সক্রিয় সেশন</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-white/5 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                  <th className="px-8 py-5">Ident User</th>
-                  <th className="px-6 py-5">Status</th>
-                  <th className="px-6 py-5">Access Tier</th>
-                  <th className="px-8 py-5 text-right">Ops</th>
+                  <th className="px-8 py-5">ইউজার আইডি</th>
+                  <th className="px-6 py-5">স্ট্যাটাস</th>
+                  <th className="px-6 py-5">অ্যাক্সেস টিয়ার</th>
+                  <th className="px-8 py-5 text-right">অপারেশন</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -153,7 +153,7 @@ export default function AdminPanel() {
                           <ActionButton 
                             onClick={() => updateUserStatus(u.uid, 'active')} 
                             icon={<CheckCircle2 size={16} />} 
-                            label="Approve" 
+                            label="অনুমোদন" 
                             color="hover:text-green-400"
                           />
                         )}
@@ -161,14 +161,14 @@ export default function AdminPanel() {
                           <ActionButton 
                             onClick={() => updateUserStatus(u.uid, 'blocked')} 
                             icon={<XCircle size={16} />} 
-                            label="Block" 
+                            label="ব্লক" 
                             color="hover:text-red-400"
                           />
                         )}
                         <ActionButton 
                           onClick={() => deleteUser(u.uid)} 
                           icon={<Trash2 size={16} />} 
-                          label="Delete" 
+                          label="ডিলিট" 
                           color="hover:text-red-600"
                         />
                       </div>
@@ -185,7 +185,7 @@ export default function AdminPanel() {
           <div className="bg-slate-900/50 rounded-2xl border border-white/5 p-6 ring-1 ring-white/5 h-fit">
             <h3 className="font-display font-bold text-lg flex items-center gap-2 mb-6">
               <Clock size={18} className="text-blue-400" />
-              Recent Productions
+              সাম্প্রতিক প্রোডাকশন
             </h3>
             <div className="space-y-4">
               {recentContent.map((item) => (
@@ -202,7 +202,7 @@ export default function AdminPanel() {
                 </div>
               ))}
               {recentContent.length === 0 && (
-                <p className="text-center py-10 text-slate-500 italic text-sm">No recent activity</p>
+                <p className="text-center py-10 text-slate-500 italic text-sm">সাম্প্রতিক কোনো কার্যক্রম নেই</p>
               )}
             </div>
           </div>
@@ -234,12 +234,19 @@ function StatusBadge({ status }: { status: string }) {
     pending: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
     blocked: "bg-red-500/10 text-red-500 border-red-500/20"
   };
+
+  const labels = {
+    active: "সক্রিয়",
+    pending: "পেন্ডিং",
+    blocked: "ব্লক করা"
+  };
+
   return (
     <span className={cn(
       "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border",
       styles[status as keyof typeof styles]
     )}>
-      {status}
+      {labels[status as keyof typeof labels] || status}
     </span>
   );
 }

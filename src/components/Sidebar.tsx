@@ -7,14 +7,14 @@ export default function Sidebar({ profile }: { profile: UserProfile | null }) {
   const location = useLocation();
 
   const menuItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-    { name: 'Generation History', icon: PlayCircle, path: '/history' },
-    { name: 'Trending Ideas', icon: TrendingUp, path: '/trending' },
+    { name: 'ড্যাশবোর্ড', icon: LayoutDashboard, path: '/dashboard' },
+    { name: 'জেনারেশন হিস্ট্রি', icon: PlayCircle, path: '/history' },
+    { name: 'ট্রেন্ডিং আইডিয়াস', icon: TrendingUp, path: '/trending' },
   ];
 
   const adminItems = [
-    { name: 'User Management', icon: Users, path: '/admin' },
-    { name: 'System Settings', icon: Settings, path: '/settings' },
+    { name: 'ইউজার ম্যানেজমেন্ট', icon: Users, path: '/admin' },
+    { name: 'সিস্টেম সেটিংস', icon: Settings, path: '/settings' },
   ];
 
   return (
@@ -27,7 +27,7 @@ export default function Sidebar({ profile }: { profile: UserProfile | null }) {
       </div>
 
       <nav className="flex-1 space-y-1">
-        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-4">Main Menu</div>
+        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-4">মেইন মেনু</div>
         {menuItems.map((item) => (
           <Link
             key={item.path}
@@ -68,10 +68,10 @@ export default function Sidebar({ profile }: { profile: UserProfile | null }) {
 
       <div className="mt-auto">
         <div className="p-4 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Current Role</p>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">বর্তমান রোল</p>
           <div className="flex items-center gap-2">
             <div className={cn("w-2 h-2 rounded-full", profile?.status === 'active' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-yellow-500')} />
-            <span className="text-sm font-bold text-white capitalize">{profile?.role || 'User'}</span>
+            <span className="text-sm font-bold text-white capitalize">{profile?.role === 'admin' ? 'অ্যাডমিন' : (profile?.email?.split('@')[0] || 'ইউজার')}</span>
           </div>
         </div>
       </div>

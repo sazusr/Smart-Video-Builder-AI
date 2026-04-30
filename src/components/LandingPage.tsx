@@ -18,9 +18,11 @@ export default function LandingPage() {
           <span className="font-display font-bold text-2xl tracking-tight">SmartVideo AI</span>
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
-          <a href="#features" className="hover:text-slate-100 transition-colors">Features</a>
-          <a href="#pricing" className="hover:text-slate-100 transition-colors">Pricing</a>
-          <Link to="/auth" className="px-6 py-2 rounded-full gradient-btn text-white font-semibold">Get Started</Link>
+          <a href="#features" className="hover:text-slate-100 transition-colors">ফিচার</a>
+          <a href="#pricing" className="hover:text-slate-100 transition-colors">প্রাইসিং</a>
+          <Link to="/auth" className="px-6 py-2 rounded-full gradient-btn text-white font-bold tracking-wider hover:scale-105 transition-transform [text-shadow:_0_2px_4px_rgba(0,0,0,0.5)]">
+            Smart Video AI
+          </Link>
         </div>
       </nav>
 
@@ -33,24 +35,20 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
           >
             <span className="inline-block px-4 py-1.5 mb-6 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest">
-              The Future of Content Creation
+              কন্টেন্ট তৈরির ভবিষ্যৎ
             </span>
             <h1 className="text-5xl md:text-7xl font-display font-extrabold mb-8 tracking-tight leading-[1.1]">
-              Generate Viral Video Content <br />
-              <span className="gradient-text">In Seconds with AI</span>
+              এআই দিয়ে কয়েক সেকেন্ডে ভাইরাল ভিডিও কন্টেন্ট <br />
+              <span className="gradient-text">তৈরি করুন</span>
             </h1>
             <p className="text-lg md:text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
-              SmartVideo AI helps you craft high-converting scripts, SEO titles, descriptions, 
-              and thumbnail ideas. Just speak or type your topic and let our AI do the heavy lifting.
+              স্মার্ট ভিডিও এআই আপনাকে SEO টাইটেল, ডেসক্রিপশন এবং থাম্বনেইল আইডিয়া তৈরি করতে সাহায্য করে। শুধু আপনার টপিক বলুন বা লিখুন এবং এআই কে কাজ করতে দিন।
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/auth" className="w-full sm:w-auto px-10 py-4 rounded-2xl gradient-btn text-white font-bold text-lg flex items-center justify-center gap-2 group">
-                Start Creating Free
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <Link to="/auth" className="w-full sm:w-auto px-10 py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-pink-500 to-orange-500 text-white font-black text-xl italic tracking-widest flex items-center justify-center gap-2 group hover:shadow-[0_0_30px_rgba(236,72,153,0.5)] transition-all [text-shadow:_2px_2px_0px_#4c1d95,_4px_4px_0px_rgba(0,0,0,0.2)]">
+                Smart Video AI
+                <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
               </Link>
-              <button className="w-full sm:w-auto px-10 py-4 rounded-2xl glass-panel text-white font-bold text-lg hover:bg-white/10 transition-colors">
-                Watch Demo
-              </button>
             </div>
           </motion.div>
 
@@ -77,7 +75,7 @@ export default function LandingPage() {
       {/* Social Proof */}
       <section className="bg-white/[0.02] border-y border-white/5 py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-slate-500 text-sm font-semibold uppercase tracking-widest mb-10">Trusted by creators worldwide</p>
+          <p className="text-slate-500 text-sm font-semibold uppercase tracking-widest mb-10">বিশ্বজুড়ে ক্রিয়েটরদের দ্বারা বিশ্বস্ত</p>
           <div className="flex flex-wrap justify-center gap-12 md:gap-24 opacity-40 grayscale contrast-125">
             <Video size={40} />
             <Sparkles size={40} />
