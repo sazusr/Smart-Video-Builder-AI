@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User account information and status",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "status": { "type": "string", "enum": ["pending", "active", "blocked"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role", "status", "createdAt", "updatedAt"]
+    },
+    "ContentRecord": {
+      "title": "Video Content Generation",
+      "description": "Generated content for a video topic",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "videoTopic": { "type": "string" },
+        "audioUrl": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "generated"] },
+        "language": { "type": "string", "enum": ["English", "Bangla"] },
+        "results": {
+          "type": "object",
+          "properties": {
+            "title": { "type": "string" },
+            "description": { "type": "string" },
+            "tags": { "type": "array", "items": { "type": "string" } },
+            "thumbnailIdea": { "type": "string" },
+            "thumbnailPrompt": { "type": "string" },
+            "script": {
+              "type": "object",
+              "properties": {
+                "hook": { "type": "string" },
+                "intro": { "type": "string" },
+                "main": { "type": "string" },
+                "outro": { "type": "string" }
+              }
+            }
+          }
+        },
+        "analytics": {
+          "type": "object",
+          "properties": {
+            "tone": { "type": "string" },
+            "keywords": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "videoTopic", "status", "createdAt"]
+    },
+    "AdminMarker": {
+      "title": "Admin Marker",
+      "description": "Marker document to identify admin users",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" }
+      },
+      "required": ["uid"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of user profiles"
+    },
+    "/content/{contentId}": {
+      "schema": "ContentRecord",
+      "description": "Generated content records"
+    },
+    "/admins/{userId}": {
+      "schema": "AdminMarker",
+      "description": "Marker collection for admin roles"
+    }
+  }
+}

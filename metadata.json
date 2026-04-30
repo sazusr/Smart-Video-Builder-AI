@@ -1,0 +1,13 @@
+{
+  "name": "Smart Video Builder AI",
+  "description": "AI-powered content creation assistant for video creators. Generate scripts, titles, tags, and thumbnail ideas from text or audio.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "AI Content Generation",
+    "Admin Dashboard",
+    "User Management",
+    "Audio Analysis"
+  ]
+}

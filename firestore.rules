@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 3: Primitive Definition
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isAdmin() { 
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email == "freelancersazu3@gmail.com"
+      ); 
+    }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // Users Collection
+    match /users/{userId} {
+      function isValidUser(data) {
+        return data.keys().hasAll(['uid', 'email', 'role', 'status', 'createdAt', 'updatedAt']) &&
+               data.keys().size() == 6 &&
+               data.uid == request.auth.uid &&
+               data.email is string && data.email.size() <= 200 &&
+               data.role in ['admin', 'user'] &&
+               data.status in ['pending', 'active', 'blocked'] &&
+               data.createdAt == request.time &&
+               data.updatedAt == request.time;
+      }
+
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && isValidId(userId) && userId == request.auth.uid && isValidUser(incoming());
+      allow update: if (isOwner(userId) || isAdmin()) && 
+                    incoming().updatedAt == request.time &&
+                    (isAdmin() || (incoming().diff(existing()).affectedKeys().hasOnly(['updatedAt']))); 
+                    // Users can't change their own role/status usually, but admins can.
+    }
+
+    // Content Collection
+    match /content/{contentId} {
+      function isValidContent(data) {
+        return data.keys().hasAll(['userId', 'videoTopic', 'status', 'createdAt']) &&
+               data.userId == request.auth.uid &&
+               data.videoTopic is string && data.videoTopic.size() <= 500 &&
+               data.status in ['pending', 'generated'] &&
+               data.createdAt == request.time;
+      }
+
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidId(contentId) && isValidContent(incoming());
+      allow update: if (resource.data.userId == request.auth.uid || isAdmin()) && 
+                    (isAdmin() || (incoming().diff(existing()).affectedKeys().hasOnly(['results', 'analytics', 'status', 'audioUrl', 'language'])));
+      allow delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+
+    // Admins Collection
+    match /admins/{userId} {
+      allow read: if isSignedIn();
+      // Only existing admins can add new admins, OR handled by special function if needed.
+      // For now, let's say the code handles the first admin check.
+      allow write: if isAdmin();
+    }
+  }
+}
