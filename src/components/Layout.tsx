@@ -1,6 +1,7 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
+import MobileNav from './MobileNav';
 import { User } from 'firebase/auth';
 import { UserProfile } from '../hooks/useAuth';
 
@@ -10,9 +11,10 @@ export default function Layout({ user, profile }: { user: User | null, profile: 
       <Sidebar profile={profile} />
       <div className="flex-1 flex flex-col min-w-0">
         <Navbar user={user} profile={profile} />
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 lg:pb-8">
           <Outlet />
         </main>
+        <MobileNav profile={profile} />
       </div>
     </div>
   );

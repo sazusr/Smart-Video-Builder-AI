@@ -9,6 +9,7 @@ import AdminPanel from './components/AdminPanel';
 import Layout from './components/Layout';
 import LandingPage from './components/LandingPage';
 import { RippleContainer } from './components/RippleContainer';
+import { LanguageProvider } from './context/LanguageContext';
 
 export default function App() {
   const { user, profile, loading } = useAuth();
@@ -22,40 +23,42 @@ export default function App() {
   }
 
   return (
-    <Router>
-      <RippleContainer>
-        <div className="min-h-screen bg-bg-dark text-slate-100">
-          <Toaster position="top-right" />
-          <Routes>
-            <Route path="/" element={user ? <Navigate to="/dashboard" /> : <LandingPage />} />
-            <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <Auth />} />
-            
-            <Route element={<Layout user={user} profile={profile} />}>
-              <Route 
-                path="/dashboard" 
-                element={user ? <Dashboard /> : <Navigate to="/auth" />} 
-              />
-              <Route 
-                path="/history" 
-                element={user ? <History /> : <Navigate to="/auth" />} 
-              />
-              <Route 
-                path="/trending" 
-                element={user ? <TrendingIdeas /> : <Navigate to="/auth" />} 
-              />
-              <Route 
-                path="/admin" 
-                element={
-                  profile?.role === 'admin' || user?.email === 'freelancersazu3@gmail.com' 
-                    ? <AdminPanel /> 
-                    : <Navigate to="/dashboard" />
-                } 
-              />
-            </Route>
-          </Routes>
-        </div>
-      </RippleContainer>
-    </Router>
+    <LanguageProvider>
+      <Router>
+        <RippleContainer>
+          <div className="min-h-screen bg-bg-dark text-slate-100">
+            <Toaster position="top-right" />
+            <Routes>
+              <Route path="/" element={user ? <Navigate to="/dashboard" /> : <LandingPage />} />
+              <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <Auth />} />
+              
+              <Route element={<Layout user={user} profile={profile} />}>
+                <Route 
+                  path="/dashboard" 
+                  element={user ? <Dashboard /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/history" 
+                  element={user ? <History /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/trending" 
+                  element={user ? <TrendingIdeas /> : <Navigate to="/auth" />} 
+                />
+                <Route 
+                  path="/admin" 
+                  element={
+                    profile?.role === 'admin' || user?.email === 'freelancersazu3@gmail.com' 
+                      ? <AdminPanel /> 
+                      : <Navigate to="/dashboard" />
+                  } 
+                />
+              </Route>
+            </Routes>
+          </div>
+        </RippleContainer>
+      </Router>
+    </LanguageProvider>
   );
 }
 

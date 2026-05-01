@@ -27,32 +27,59 @@ export interface VideoContent {
   };
 }
 
-export async function generateVideoContent(topic: string, isAudio: boolean = false, language: 'English' | 'Bangla' = 'English', userApiKey?: string, backupApiKeys?: string[]): Promise<VideoContent> {
+export async function generateVideoContent(
+  topic: string, 
+  isAudio: boolean = false, 
+  language: 'English' | 'Bangla' = 'English', 
+  userApiKey?: string, 
+  backupApiKeys?: string[],
+  videoType: 'long' | 'shorts' = 'long',
+  channelName?: string
+): Promise<VideoContent> {
   const modelName = "gemini-3-flash-preview";
   
   const attemptGeneration = async (key?: string) => {
     const ai = getAi(key);
     
-    const systemInstruction = `You are a world-class Social Media Content Architect and SEO Specialist. 
-    Your mission is to generate viral, high-engagement video metadata.
+    const brandingNote = channelName ? `BRANDING: The content MUST include the channel name "${channelName}" in the Title (if natural) and at the end of the Description.` : '';
     
+    const longVideoRules = `
+    - VIRAL SEO TITLE: Create a catchy, high-CTR, viral title.
+      - Use curiosity words: "রহস্য", "অবিশ্বাস্য", "শেষ পর্যন্ত দেখুন", "চমকে যাবেন", "সত্য", "ভয়ংকর", "লিক", "ধরা পড়লো".
+      - Length: < 70 chars. Mobile-friendly.
+      - SEO: Main keywords at the beginning. 
+    - VIRAL SEO DESCRIPTION:
+      - Line 1: Main Hook or Curiosity Keyword. Main keyword within 100 characters.
+      - Body: Short summary followed by natural keyword integration.
+      - CTA: "ভিডিওটি ভালো লাগলে Like, Comment ও Subscribe করুন।"
+      - Hashtags: 3-5 relevant.`;
+
+    const shortsRules = `
+    - VIRAL HOOK TITLE: Create a powerful, fast-paced hook title for Shorts.
+      - Hook: First 2-4 words MUST capture instant attention.
+      - Hashtags: You MUST include exactly 3 hashtags at the end of the title: #ChannelName (using "${channelName || 'YourChannel'}"), and 2 other viral/trending hashtags.
+      - Length: Very short and punchy.
+    - VIRAL SHORT DESCRIPTION/CAPTION:
+      - Style: Viral caption style. Very concise but dense with hashtags.
+      - Engagement: Use "শেষে যা হলো...", "৯৯% মানুষ জানে না".
+      - Hashtags: Use 10-15 trending Shorts hashtags.
+    - VIRAL TAGS: Provide a list of 30-40 high-impact, genuine, and important SEO tags specifically for Shorts.`;
+
+    const systemInstruction = `You are a world-class Social Media Content Architect and SEO Specialist. 
+    Your mission is to generate viral, high-engagement video metadata for a ${videoType === 'long' ? 'Long-form Video' : 'YouTube Shorts/TikTok'} content.
+    
+    ${brandingNote}
+
     CRITICAL RULES:
-    1. LANGUAGE: Respond in ${language}. If the language is Bangla, all content (Title, Description, Script) MUST be in professional, natural Bangla. Do NOT translate to English unless specified.
-    2. SEO TITLE: Create a catchy, high-CTR title that is optimized for search. If Bangla, keep it in Bangla but ensure it sounds professional.
-    3. PROFESSIONAL DESCRIPTION: 
-       - Use a professional and engaging tone.
-       - Include a clear call to action.
-       - At the VERY bottom, include 5-10 relevant professional hashtags (a mix of common and niche).
-    4. VIRAL TAGS: Provide a list of 15-20 tags. This MUST be a mix of highly viral Bangla keywords and trending English SEO terms related to the topic. All tags MUST relate directly to the Title's context.
-    5. THUMBNAIL DESIGN: 
-       - 'thumbnailIdea': Describe a high-CTR, relatable visual concept in ${language}. Focus on a single powerful image that captures the video's core message.
-       - 'thumbnailPrompt': This MUST be a professional English prompt for DALL-E 3. It MUST strictly follow these principles:
-         - Core Qualities: "Strong Visualization, Clean Composition, 3D/Emboss Style, Cinematic Lighting, Bold Main Subject, Minimal Text, High Contrast, No Noise/Clutter, Ultra Detailed, Eye-Catching Colors."
-         - Clarity: Ensure the design is "Clean, Clickable, High Quality" and easily understandable from afar.
-         - Constraints: Avoid too much text, too many objects, or visual noise. Focus on one high-impact focal point that directly reflects the Title's hook.
-         - Typography: Specify "Professional bold 3D typography" only for the most important hook word.
-    6. CONSISTENCY: Ensure the tags, title, description, and thumbnail hook all synchronize perfectly.
-    7. THE RESPONSE: Must be a single valid JSON object strictly following the schema.`;
+    1. LANGUAGE ENFORCEMENT: All generated content (Title, Description, Tags, Script) MUST be 100% in ${language}. If ${language} is Bangla, use natural, professional, and viral Bangla language. DO NOT mix or switch to English unless it is for technical tags.
+    2. CONTENT FORMATTING (${videoType.toUpperCase()} VIDEO):
+       ${videoType === 'long' ? longVideoRules : shortsRules}
+    3. VIRAL TAGS: Provide a list of ${videoType === 'long' ? '15-20' : '30-40'} tags in ${language}. Mix of viral ${language} keywords and trending SEO terms.
+    4. THUMBNAIL DESIGN: 
+       - 'thumbnailIdea': Describe a high-CTR visual concept in ${language}. 
+       - 'thumbnailPrompt': This MUST be a professional English prompt for DALL-E 3 (AI image generators only understand English).
+    5. CONSISTENCY: Title, Description, Tags, and Thumbnail MUST all work together as a unified viral package in ${language}.
+    6. THE RESPONSE: Must be a single valid JSON object strictly following the schema.`;
 
     const prompt = isAudio 
       ? `Input source (Text/Audio Transcript): "${topic}". Analyze this input and generate a complete viral video package centered around its core message.`

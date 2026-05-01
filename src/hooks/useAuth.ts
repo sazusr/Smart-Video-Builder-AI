@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { doc, getDocFromServer, setDoc, query, collection, getDocsFromServer, limit, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, query, collection, getDocs, limit, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 
 export interface UserProfile {
@@ -8,6 +8,7 @@ export interface UserProfile {
   email: string;
   firstName?: string;
   phone?: string;
+  channelName?: string;
   geminiApiKey?: string;
   geminiBackupApiKeys?: string[];
   role: 'admin' | 'user';
@@ -32,19 +33,7 @@ export function useAuth() {
           
           // Fetch or create profile
           const userDocRef = doc(db, 'users', u.uid);
-          let userDoc;
-          try {
-            userDoc = await getDocFromServer(userDocRef);
-          } catch (e: any) {
-            if (e.message?.includes('offline')) {
-              console.warn("Firestore client is offline, retrying with cache...");
-              // Fallback to getDoc (cache) if server is unreachable
-              const { getDoc } = await import('firebase/firestore');
-              userDoc = await getDoc(userDocRef);
-            } else {
-              throw e;
-            }
-          }
+          const userDoc = await getDoc(userDocRef);
           
           if (userDoc.exists()) {
             let profileData = userDoc.data() as UserProfile;
@@ -73,7 +62,7 @@ export function useAuth() {
             if (!isSuperAdmin) {
               try {
                 const usersQuery = query(collection(db, 'users'), limit(1));
-                const usersSnap = await getDocsFromServer(usersQuery);
+                const usersSnap = await getDocs(usersQuery);
                 isFirstUser = usersSnap.empty;
               } catch (e) {
                 // If query fails, assume not first user (safest)

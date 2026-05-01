@@ -18,12 +18,12 @@ export default function Sidebar({ profile }: { profile: UserProfile | null }) {
   ];
 
   return (
-    <aside className="w-64 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl hidden lg:flex flex-col p-6 h-screen sticky top-0">
+    <aside className="w-64 border-r border-slate-800 bg-slate-900/50 backdrop-blur-xl hidden md:flex flex-col p-6 h-screen sticky top-0">
       <div className="flex items-center gap-3 mb-10">
         <div className="w-8 h-8 rounded-lg gradient-btn flex items-center justify-center shadow-purple-500/10">
           <PlayCircle className="text-white w-5 h-5" />
         </div>
-        <span className="font-display font-bold text-lg tracking-tight text-white leading-none">SmartVideo AI</span>
+        <span className="font-display font-bold text-lg tracking-tight text-white leading-none">Smart Video Builder</span>
       </div>
 
       <nav className="flex-1 space-y-1">

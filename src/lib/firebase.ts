@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
@@ -11,11 +11,13 @@ export const auth = getAuth(app);
 async function testConnection() {
   try {
     const testDoc = doc(db, 'test', 'connection');
-    await getDocFromServer(testDoc);
+    await getDoc(testDoc);
     console.log("Firebase Connected Successfully");
   } catch (error: any) {
     // Silently handle initial connection test to avoid confusing users during setup
-    console.warn("Firestore connection check deferred: ", error.message);
+    if (!error.message?.includes('offline')) {
+      console.warn("Firestore connection check deferred: ", error.message);
+    }
   }
 }
 testConnection();

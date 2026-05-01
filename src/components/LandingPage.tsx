@@ -2,8 +2,12 @@ import { Link } from 'react-router-dom';
 import { PlayCircle, Zap, Shield, Globe, Video, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import AuthForm from './AuthForm';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function LandingPage() {
+  const { t: globalT } = useLanguage();
+  const t = globalT.landing;
+
   return (
     <div className="min-h-screen bg-bg-dark overflow-hidden selection:bg-primary/30 selection:text-white">
       {/* Background Blobs */}
@@ -13,15 +17,15 @@ export default function LandingPage() {
       </div>
 
       {/* Nav */}
-      <nav className="relative z-20 flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
+      <nav className="relative z-20 flex items-center justify-between px-4 sm:px-8 py-6 max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <PlayCircle className="text-primary w-8 h-8" />
-          <span className="font-display font-bold text-2xl tracking-tight text-white italic">SmartVideo AI</span>
+          <span className="font-display font-bold text-xl sm:text-2xl tracking-tight text-white italic">Smart Video Builder</span>
         </div>
         <div className="flex items-center gap-6">
-          <Link to="/auth" className="hidden sm:block text-sm font-bold text-slate-400 hover:text-white transition-colors">প্রাইসিং</Link>
+          <Link to="/auth" className="hidden sm:block text-sm font-bold text-slate-400 hover:text-white transition-colors">{t.pricing}</Link>
           <div className="h-4 w-[1px] bg-white/10 hidden sm:block"></div>
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 animate-pulse hidden sm:block">এখনই যুক্ত হোন</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/80 animate-pulse hidden sm:block">{t.joinNow}</span>
         </div>
       </nav>
 
@@ -38,14 +42,14 @@ export default function LandingPage() {
           >
 
             <h1 className="text-6xl md:text-8xl font-display font-black mb-6 tracking-tighter leading-[0.8] text-white">
-              স্মার্ট <br />
+              {t.heroTitle1} <br />
               <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 bg-clip-text text-transparent italic [text-shadow:_4px_4px_0px_#4c1d95,_8px_8px_0px_rgba(0,0,0,0.2)]">
-                ভিডিও এআই
+                {t.heroTitle2}
               </span>
             </h1>
             
             <p className="text-xl text-slate-400 mb-8 max-w-sm leading-relaxed font-bold">
-              আপনার ভিডিওকে দ্রুত SEO অপ্টিমাইজ করে শক্তিশালী করুন সহজেই
+              {t.heroDesc}
             </p>
           </motion.div>
 
@@ -76,7 +80,7 @@ export default function LandingPage() {
       {/* Social Proof / Footer Logos */}
       <section className="bg-white/[0.02] border-t border-white/5 py-16 relative z-10">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-12">Proudly Powered By</p>
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-12">{t.poweredBy}</p>
           <div className="flex flex-wrap justify-center gap-12 md:gap-24 opacity-30 grayscale saturate-0 hover:opacity-60 transition-opacity">
             <div className="flex items-center gap-2">
               <Video className="w-8 h-8 text-white" />
