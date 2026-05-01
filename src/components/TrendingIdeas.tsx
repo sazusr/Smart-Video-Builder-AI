@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
 import { TrendingUp, RefreshCw, Copy, Sparkles, Youtube, Instagram, Music2 } from 'lucide-react';
 import { generateTrendingIdeas } from '../services/gemini';
+import { useAuth } from '../hooks/useAuth';
 import { toast } from 'react-hot-toast';
 import { motion } from 'motion/react';
 
 export default function TrendingIdeas() {
+  const { profile } = useAuth();
   const [ideas, setIdeas] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchIdeas = async () => {
     setLoading(true);
     try {
-      const data = await generateTrendingIdeas(9);
+      const data = await generateTrendingIdeas(profile?.geminiApiKey, profile?.geminiBackupApiKeys, 9);
       setIdeas(data);
     } catch (error) {
       toast.error('ট্রেন্ডিং আইডিয়াস আনতে ব্যর্থ হয়েছে');

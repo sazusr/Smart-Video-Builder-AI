@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc, setDoc, query, collection, getDocs, limit, serverTimestamp } from 'firebase/firestore';
+import { doc, getDocFromServer, setDoc, query, collection, getDocsFromServer, limit, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 
 export interface UserProfile {
   uid: string;
   email: string;
+  firstName?: string;
+  phone?: string;
+  geminiApiKey?: string;
+  geminiBackupApiKeys?: string[];
   role: 'admin' | 'user';
   status: 'active' | 'pending' | 'blocked';
   createdAt: any;
@@ -28,7 +32,19 @@ export function useAuth() {
           
           // Fetch or create profile
           const userDocRef = doc(db, 'users', u.uid);
-          const userDoc = await getDoc(userDocRef);
+          let userDoc;
+          try {
+            userDoc = await getDocFromServer(userDocRef);
+          } catch (e: any) {
+            if (e.message?.includes('offline')) {
+              console.warn("Firestore client is offline, retrying with cache...");
+              // Fallback to getDoc (cache) if server is unreachable
+              const { getDoc } = await import('firebase/firestore');
+              userDoc = await getDoc(userDocRef);
+            } else {
+              throw e;
+            }
+          }
           
           if (userDoc.exists()) {
             let profileData = userDoc.data() as UserProfile;
@@ -37,7 +53,11 @@ export function useAuth() {
             if (isSuperAdmin && (profileData.role !== 'admin' || profileData.status !== 'active')) {
               profileData.role = 'admin';
               profileData.status = 'active';
-              await setDoc(userDocRef, { role: 'admin', status: 'active' }, { merge: true });
+              await setDoc(userDocRef, { 
+                role: 'admin', 
+                status: 'active',
+                updatedAt: serverTimestamp()
+              }, { merge: true });
               try {
                 await setDoc(doc(db, 'admins', u.uid), { uid: u.uid });
               } catch (e) {
@@ -53,7 +73,7 @@ export function useAuth() {
             if (!isSuperAdmin) {
               try {
                 const usersQuery = query(collection(db, 'users'), limit(1));
-                const usersSnap = await getDocs(usersQuery);
+                const usersSnap = await getDocsFromServer(usersQuery);
                 isFirstUser = usersSnap.empty;
               } catch (e) {
                 // If query fails, assume not first user (safest)

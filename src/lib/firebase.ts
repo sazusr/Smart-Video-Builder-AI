@@ -18,7 +18,7 @@ async function testConnection() {
     console.warn("Firestore connection check deferred: ", error.message);
   }
 }
-// testConnection(); // Disable for now to let user finalize setup
+testConnection();
 
 export enum OperationType {
   CREATE = 'create',

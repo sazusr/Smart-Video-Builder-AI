@@ -88,7 +88,7 @@ export default function Dashboard() {
     
     setResult(null);
     try {
-      const content = await generateVideoContent(topic, false, language);
+      const content = await generateVideoContent(topic, false, language, profile?.geminiApiKey, profile?.geminiBackupApiKeys);
       setResult(content);
 
       // Save to Firestore
@@ -160,8 +160,8 @@ Outro: ${result.script.outro}
       </div>
 
       {/* Input Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-slate-900/50 rounded-2xl p-6 border border-white/5 backdrop-blur-sm relative overflow-hidden ring-1 ring-white/5">
+      <div className="grid grid-cols-1 gap-6">
+        <div className="bg-slate-900/50 rounded-2xl p-6 border border-white/5 backdrop-blur-sm relative overflow-hidden ring-1 ring-white/5">
           <div className="absolute top-0 right-0 p-4">
              <span className="bg-purple-500/10 text-purple-400 text-[10px] font-bold px-2 py-1 rounded uppercase tracking-widest border border-purple-500/10">Stable Engine V4</span>
           </div>
@@ -223,19 +223,6 @@ Outro: ${result.script.outro}
             </div>
           </form>
         </div>
-
-        {/* Quick Insights */}
-        <div className="bg-slate-900/50 rounded-2xl p-6 border border-white/5 flex flex-col gap-4 ring-1 ring-white/5">
-          <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest">এআই ইনসাইটস</h3>
-          <div className="flex flex-col gap-3">
-            <div className="p-3.5 rounded-xl bg-blue-500/5 border border-blue-500/20">
-              <div className="text-[10px] text-blue-400 mb-1 font-bold uppercase tracking-wider">ডিটেক্টেড টোন</div>
-              <div className="text-sm text-blue-100 font-medium">
-                {result ? result.analytics.tone : 'এখনও কোনো বিশ্লেষণ নেই'}
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Results Area */}
@@ -249,7 +236,7 @@ Outro: ${result.script.outro}
             {/* Left: Metadata Assets */}
             <div className="col-span-12 lg:col-span-5 flex flex-col gap-6">
               <ResultCard 
-                title="SEO অপ্টিমাইজড টাইটেল" 
+                title={<span>SEO Optimization <span className="text-primary">Title</span></span>}
                 icon={<BarChart3 size={14} />} 
                 content={result.title}
                 onCopy={() => copyToClipboard(result.title, 'title')}
@@ -257,7 +244,7 @@ Outro: ${result.script.outro}
               />
 
               <ResultCard 
-                title="গ্রোথ ট্যাগ" 
+                title="Tags" 
                 icon={<Tag size={14} />} 
                 content={result.tags.join(', ')}
                 onCopy={() => copyToClipboard(result.tags.join(', '), 'tags')}
@@ -265,28 +252,37 @@ Outro: ${result.script.outro}
                 tags={result.tags}
               />
 
+              <ResultCard 
+                title="Description" 
+                icon={<FileText size={14} />} 
+                content={result.description}
+                onCopy={() => copyToClipboard(result.description, 'description')}
+                isCopied={copiedField === 'description'}
+                isLongText
+              />
+
               <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-6 flex-1 flex flex-col ring-1 ring-white/5">
                 <div className="flex justify-between items-center mb-4">
-                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 text-white">
                     <ImageIcon size={14} className="text-purple-400" />
-                    থাম্বনেইল ব্লুপ্রিন্ট
+                    Thumbnail
                   </h4>
                   <button 
                     onClick={() => copyToClipboard(result.thumbnailPrompt, 'thumb-p')}
                     className="text-[10px] text-purple-400 font-bold uppercase hover:text-purple-300 transition-colors"
                   >
-                    {copiedField === 'thumb-p' ? 'কপি হয়েছে!' : 'প্রম্পট কপি করুন'}
+                    {copiedField === 'thumb-p' ? 'Copied!' : 'Copy Prompt'}
                   </button>
                 </div>
                 <p className="text-sm text-slate-300 leading-relaxed font-medium mb-6">
                   {result.thumbnailIdea}
                 </p>
                 <div className="mt-auto p-3 rounded-xl bg-black/20 border border-white/5">
-                  <p className="text-[9px] font-bold uppercase text-slate-500 mb-1">ডাল-ই প্রম্পট</p>
+                  <p className="text-[9px] font-bold uppercase text-slate-500 mb-1">DALL-E Prompt</p>
                   <p className="text-[11px] text-primary/80 italic line-clamp-2">{result.thumbnailPrompt}</p>
                 </div>
                 <button className="mt-4 w-full py-2.5 bg-white/5 border border-white/10 rounded-xl text-[10px] uppercase font-bold text-slate-300 hover:bg-white/10 transition-colors">
-                  এআই ইমেজ প্রিভিউ জেনারেট করুন
+                  Generate AI Preview
                 </button>
               </div>
             </div>

@@ -71,7 +71,9 @@ export default function Sidebar({ profile }: { profile: UserProfile | null }) {
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">বর্তমান রোল</p>
           <div className="flex items-center gap-2">
             <div className={cn("w-2 h-2 rounded-full", profile?.status === 'active' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]' : 'bg-yellow-500')} />
-            <span className="text-sm font-bold text-white capitalize">{profile?.role === 'admin' ? 'অ্যাডমিন' : (profile?.email?.split('@')[0] || 'ইউজার')}</span>
+            <span className="text-sm font-bold text-white capitalize">
+              {profile?.role === 'admin' ? 'অ্যাডমিন' : (profile?.firstName || profile?.email?.split('@')[0] || 'ইউজার')}
+            </span>
           </div>
         </div>
       </div>

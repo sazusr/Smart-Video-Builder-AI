@@ -10,7 +10,9 @@
         "role": { "type": "string", "enum": ["admin", "user"] },
         "status": { "type": "string", "enum": ["pending", "active", "blocked"] },
         "createdAt": { "type": "string", "format": "date-time" },
-        "updatedAt": { "type": "string", "format": "date-time" }
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "geminiApiKey": { "type": "string" },
+        "geminiBackupApiKeys": { "type": "array", "items": { "type": "string" } }
       },
       "required": ["uid", "email", "role", "status", "createdAt", "updatedAt"]
     },
