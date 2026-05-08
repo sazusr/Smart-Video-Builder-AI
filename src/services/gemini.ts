@@ -27,6 +27,59 @@ export interface VideoContent {
   };
 }
 
+export type CopyrightStatus = 'YES' | 'NO';
+
+export async function checkAudioCopyright(
+  topic: string,
+  userApiKey?: string,
+  backupApiKeys?: string[]
+): Promise<CopyrightStatus> {
+  const modelName = "gemini-3-flash-preview";
+  
+  const attemptCheck = async (key?: string) => {
+    const ai = getAi(key);
+    
+    const systemInstruction = `You are a YouTube Rights Management Expert. 
+    Analyze the provided audio transcript or metadata for potential copyright issues.
+    YouTube's Content ID system picks up:
+    1. Popular music or backing tracks.
+    2. Licensed sound effects.
+    3. Re-uploaded media content.
+    
+    CRITICAL: 
+    - Return 'NO' if the audio likely contains copyrighted music, unlicensed famous melodies, or high-risk protected content.
+    - Return 'YES' if the audio sounds like original speech, royalty-free content, or safe personal recordings.
+    
+    Respond ONLY with 'YES' or 'NO'. No other text.`;
+
+    const response = await ai.models.generateContent({
+      model: modelName,
+      contents: `Input: "${topic}". Is this safe for YouTube monetization?`,
+      config: {
+        systemInstruction,
+      }
+    });
+
+    const text = response.text?.trim().toUpperCase();
+    return text === 'YES' ? 'YES' : 'NO';
+  };
+
+  try {
+    return await attemptCheck(userApiKey);
+  } catch (error) {
+    if (backupApiKeys && backupApiKeys.length > 0) {
+      for (const key of backupApiKeys) {
+        try {
+          return await attemptCheck(key);
+        } catch (err) {
+          console.warn("Backup copyright key failed, trying next...");
+        }
+      }
+    }
+    return await attemptCheck();
+  }
+}
+
 export async function generateVideoContent(
   topic: string, 
   isAudio: boolean = false, 

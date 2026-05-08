@@ -31,11 +31,27 @@ export function useAuth() {
         if (u) {
           const isSuperAdmin = u.email === SUPER_ADMIN_EMAIL;
           
-          // Fetch or create profile
+          // Fetch or create profile with retry logic for offline states
           const userDocRef = doc(db, 'users', u.uid);
-          const userDoc = await getDoc(userDocRef);
+          let userDoc;
+          let retries = 3;
           
-          if (userDoc.exists()) {
+          while (retries > 0) {
+            try {
+              userDoc = await getDoc(userDocRef);
+              break;
+            } catch (e: any) {
+              if (e.message?.includes('offline') && retries > 1) {
+                console.warn(`Firestore offline, retrying (${retries} left)...`);
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                retries--;
+              } else {
+                throw e;
+              }
+            }
+          }
+
+          if (userDoc && userDoc.exists()) {
             let profileData = userDoc.data() as UserProfile;
             
             // Force Super Admin privileges and active status if email matches
@@ -80,9 +96,24 @@ export function useAuth() {
               updatedAt: serverTimestamp(),
             };
 
-            await setDoc(userDocRef, newProfile);
+            let writeSuccessful = false;
+            let writeRetries = 3;
+            while (writeRetries > 0) {
+              try {
+                await setDoc(userDocRef, newProfile);
+                writeSuccessful = true;
+                break;
+              } catch (e: any) {
+                if (e.message?.includes('offline') && writeRetries > 1) {
+                  await new Promise(resolve => setTimeout(resolve, 2000));
+                  writeRetries--;
+                } else {
+                  throw e;
+                }
+              }
+            }
             
-            if (isFirstUser) {
+            if (isFirstUser && writeSuccessful) {
               try {
                 await setDoc(doc(db, 'admins', u.uid), { uid: u.uid });
               } catch (e) {

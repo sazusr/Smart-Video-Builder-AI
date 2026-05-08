@@ -20,7 +20,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useLanguage } from '../context/LanguageContext';
-import { generateVideoContent, VideoContent } from '../services/gemini';
+import { generateVideoContent, VideoContent, checkAudioCopyright, CopyrightStatus } from '../services/gemini';
 import { db, handleFirestoreError, OperationType } from '../lib/firebase';
 import { addDoc, collection, serverTimestamp, query, where, getDocs, Timestamp, doc, updateDoc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
@@ -58,6 +58,9 @@ export default function Dashboard() {
   const [showChannelModal, setShowChannelModal] = useState(false);
   const [channelNameInput, setChannelNameInput] = useState('');
   const [savingChannel, setSavingChannel] = useState(false);
+  const [isAudioInput, setIsAudioInput] = useState(false);
+  const [isAnalyzingCopyright, setIsAnalyzingCopyright] = useState(false);
+  const [copyrightStatus, setCopyrightStatus] = useState<CopyrightStatus | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -95,13 +98,11 @@ export default function Dashboard() {
       return;
     }
 
+    setResult(null);
+    setCopyrightStatus(null);
+    setIsAudioInput(true);
     toast.success(`Voice file "${file.name}" uploaded. Processing...`);
-    // In a real app, you'd send this to a transcription service
-    // For now, we'll just set a placeholder message
     setTopic(`Audio Transcript for ${file.name}: [AI Processing...]`);
-    
-    // Auto-generate if it were a real transcription
-    // handleGenerate();
   };
 
   useEffect(() => {
@@ -118,12 +119,31 @@ export default function Dashboard() {
     }
 
     setLoading(true);
-    
     setResult(null);
+
     try {
+      // Step 1: Copyright Check (if audio)
+      if (isAudioInput) {
+        setIsAnalyzingCopyright(true);
+        const status = await checkAudioCopyright(
+          topic,
+          profile?.geminiApiKey,
+          profile?.geminiBackupApiKeys
+        );
+        setCopyrightStatus(status);
+        setIsAnalyzingCopyright(false);
+
+        if (status === 'NO') {
+          setLoading(false);
+          toast.error('YouTube Copyright Detected! Generation stopped.');
+          return;
+        }
+      }
+
+      // Step 2: Content Generation
       const content = await generateVideoContent(
         topic, 
-        false, 
+        isAudioInput, 
         language, 
         profile?.geminiApiKey, 
         profile?.geminiBackupApiKeys,
@@ -254,12 +274,56 @@ Outro: ${result.script.outro}
           </h3>
           
           <form onSubmit={handleGenerate} className="space-y-6 md:space-y-8">
-            <textarea 
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              placeholder={t.placeholder}
-              className="w-full bg-transparent border-none text-lg md:text-2xl font-medium text-white placeholder-slate-700 resize-none focus:ring-0 min-h-[100px] md:min-h-[120px] custom-scrollbar"
-            />
+              <textarea 
+                value={topic}
+                onChange={(e) => {
+                  setTopic(e.target.value);
+                  if (isAudioInput) setIsAudioInput(false);
+                  if (copyrightStatus) setCopyrightStatus(null);
+                }}
+                placeholder={t.placeholder}
+                className="w-full bg-transparent border-none text-lg md:text-2xl font-medium text-white placeholder-slate-700 resize-none focus:ring-0 min-h-[100px] md:min-h-[120px] custom-scrollbar"
+              />
+              
+              {/* Copyright Analysis UI */}
+              <AnimatePresence>
+                {(isAnalyzingCopyright || copyrightStatus) && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mb-6 overflow-hidden"
+                  >
+                    <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 ring-1 ring-white/5">
+                      <div className="flex items-center gap-3">
+                        <div className={cn(
+                          "w-8 h-8 rounded-lg flex items-center justify-center",
+                          isAnalyzingCopyright ? "bg-blue-500/10 text-blue-400" : 
+                          copyrightStatus === 'YES' ? "bg-green-500/10 text-green-400" : "bg-red-500/10 text-red-400"
+                        )}>
+                          {isAnalyzingCopyright ? <RefreshCw size={16} className="animate-spin" /> : 
+                           copyrightStatus === 'YES' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none mb-1">{t.copyrightTitle}</p>
+                          <p className="text-xs font-bold text-white">
+                            {isAnalyzingCopyright ? t.checking : (copyrightStatus === 'YES' ? t.copyrightSafe : t.copyrightUnsafe)}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {!isAnalyzingCopyright && copyrightStatus && (
+                        <div className={cn(
+                          "px-3 py-1 rounded-full text-[9px] font-black tracking-widest border",
+                          copyrightStatus === 'YES' ? "bg-green-500/10 text-green-400 border-green-500/20" : "bg-red-500/10 text-red-400 border-red-500/20"
+                        )}>
+                          {copyrightStatus}
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             
             <div className="flex flex-col xl:flex-row xl:items-center justify-between pt-4 md:pt-6 gap-4 md:gap-6 border-t border-white/[0.05]">
               <div className="flex flex-wrap items-center gap-3 md:gap-4">

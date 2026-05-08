@@ -38,7 +38,12 @@ export const translations = {
       yourChannel: "আপনার চ্যানেল",
       successMsg: "কন্টেন্ট সফলভাবে তৈরি হয়েছে!",
       errorMsg: "কন্টেন্ট তৈরি করতে ব্যর্থ হয়েছে। দয়া করে আবার চেষ্টা করুন।",
-      copySuccess: "ক্লিপবোর্ডে কপি হয়েছে"
+      copySuccess: "ক্লিপবোর্ডে কপি হয়েছে",
+      copyrightTitle: "YouTube Copyright",
+      checking: "বিশ্লেষণ করা হচ্ছে...",
+      copyrightSafe: "YES",
+      copyrightUnsafe: "NO",
+      copyrightStatus: "কপিরাইট স্ট্যাটাস"
     },
     history: {
       title: "প্রোডাকশন হিস্ট্রি",
@@ -93,7 +98,12 @@ export const translations = {
       yourChannel: "Your Channel",
       successMsg: "Content generated successfully!",
       errorMsg: "Failed to generate content. Please try again.",
-      copySuccess: "Copied to clipboard"
+      copySuccess: "Copied to clipboard",
+      copyrightTitle: "YouTube Copyright",
+      checking: "Analyzing Audio...",
+      copyrightSafe: "YES",
+      copyrightUnsafe: "NO",
+      copyrightStatus: "Copyright Status"
     },
     history: {
       title: "Production History",

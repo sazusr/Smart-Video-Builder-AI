@@ -11,13 +11,15 @@ export const auth = getAuth(app);
 async function testConnection() {
   try {
     const testDoc = doc(db, 'test', 'connection');
+    // Using getDoc which defaults to cache then server
     await getDoc(testDoc);
     console.log("Firebase Connected Successfully");
   } catch (error: any) {
-    // Silently handle initial connection test to avoid confusing users during setup
-    if (!error.message?.includes('offline')) {
-      console.warn("Firestore connection check deferred: ", error.message);
+    // Completely silent for offline/network errors during init
+    if (error.message?.includes('offline') || error.message?.includes('network')) {
+      return;
     }
+    console.warn("Firestore connection check deferred: ", error.message);
   }
 }
 testConnection();
