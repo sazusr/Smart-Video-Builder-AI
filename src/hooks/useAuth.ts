@@ -41,12 +41,15 @@ export function useAuth() {
               userDoc = await getDoc(userDocRef);
               break;
             } catch (e: any) {
-              if (e.message?.includes('offline') && retries > 1) {
+              // If offline, try once more then fallback gracefully
+              if ((e.message?.includes('offline') || e.code === 'unavailable') && retries > 1) {
                 console.warn(`Firestore offline, retrying (${retries} left)...`);
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                await new Promise(resolve => setTimeout(resolve, 1500));
                 retries--;
               } else {
-                throw e;
+                console.warn("Auth initializing in offline mode or profile missing.");
+                // Instead of throwing, we'll break and handle it below
+                break; 
               }
             }
           }
@@ -80,9 +83,9 @@ export function useAuth() {
                 const usersQuery = query(collection(db, 'users'), limit(1));
                 const usersSnap = await getDocs(usersQuery);
                 isFirstUser = usersSnap.empty;
-              } catch (e) {
-                // If query fails, assume not first user (safest)
-                console.warn("Could not check if first user, defaulting to regular user");
+              } catch (e: any) {
+                // If offline or query fails, assume not first user (safest)
+                console.warn("Could not check if first user (offline?), defaulting to regular user profile.");
                 isFirstUser = false;
               }
             }
@@ -104,11 +107,12 @@ export function useAuth() {
                 writeSuccessful = true;
                 break;
               } catch (e: any) {
-                if (e.message?.includes('offline') && writeRetries > 1) {
-                  await new Promise(resolve => setTimeout(resolve, 2000));
+                if ((e.message?.includes('offline') || e.code === 'unavailable') && writeRetries > 1) {
+                  await new Promise(resolve => setTimeout(resolve, 1500));
                   writeRetries--;
                 } else {
-                  throw e;
+                  console.warn("Could not sync profile to server (offline mode)");
+                  break;
                 }
               }
             }
