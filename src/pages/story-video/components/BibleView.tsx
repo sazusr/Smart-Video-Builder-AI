@@ -44,46 +44,33 @@ export default function BibleView({
     background: 'var(--bg-panel)',
     border: '1px solid var(--border-light)',
     borderLeft: `4px solid ${borderColor}`,
-    borderRadius: '20px',
-    padding: '24px',
-    marginBottom: '16px',
+    borderRadius: '16px',
+    padding: '14px',
+    marginBottom: '14px',
     position: 'relative' as const,
   });
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div className="flex flex-col gap-4 sm:gap-6">
       {/* Tabs */}
-      <div style={{ 
-        display: 'flex', 
-        gap: '8px', 
-        overflowX: 'auto', 
-        paddingBottom: '8px',
-        borderBottom: '1px solid var(--border)' 
-      }}>
+      <div className="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pb-1.5 border-b border-[var(--border)] -mx-1 px-1">
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '12px 24px',
-              background: activeTab === tab.id ? 'var(--bg-secondary)' : 'transparent',
-              color: activeTab === tab.id ? 'var(--text-primary)' : 'var(--text-muted)',
-              border: 'none',
-              borderRadius: '12px',
-              cursor: 'pointer',
-              fontWeight: activeTab === tab.id ? '600' : '500',
-              transition: 'all 0.2s',
-              whiteSpace: 'nowrap'
-            }}
+            className={`flex items-center gap-1.5 px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm whitespace-nowrap transition-all cursor-pointer ${
+              activeTab === tab.id
+                ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)] shadow-sm'
+                : 'bg-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+            }`}
           >
             {tab.icon}
-            {tab.label}
+            <span>{tab.label}</span>
           </button>
         ))}
       </div>
+
+      {/* Content */}
 
       {/* Content */}
       <div style={{ minHeight: '400px' }}>
@@ -279,54 +266,30 @@ export default function BibleView({
       </div>
 
       {/* Action Buttons */}
-      <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', paddingTop: '16px', borderTop: '1px solid var(--border)' }}>
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-end pt-3 border-t border-[var(--border)]">
         <button
           onClick={onRegenerateBibles}
           disabled={loading}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '12px 24px',
-            background: 'var(--bg-secondary)',
-            color: 'var(--text-primary)',
-            border: '1px solid var(--border)',
-            borderRadius: '12px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            fontWeight: '600',
-            opacity: loading ? 0.7 : 1
-          }}
+          className="flex items-center justify-center gap-2 px-4 py-2.5 sm:px-6 sm:py-3 rounded-xl border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--text-primary)] text-xs sm:text-sm font-semibold cursor-pointer disabled:opacity-50"
         >
           <motion.div
             animate={loading ? { rotate: 360 } : { rotate: 0 }}
             transition={loading ? { repeat: Infinity, duration: 1, ease: 'linear' } : {}}
-            style={{ display: 'flex' }}
+            className="flex"
           >
-            <RefreshCw size={18} />
+            <RefreshCw size={14} />
           </motion.div>
-          {loading ? 'তৈরি হচ্ছে...' : 'আবার তৈরি করুন'}
+          <span>{loading ? 'তৈরি হচ্ছে...' : 'আবার তৈরি করুন'}</span>
         </button>
         
-          <button
-            onClick={onApprove}
-            disabled={loading}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '12px 24px',
-              background: 'var(--gradient-brand)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '12px',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              fontWeight: '600',
-              opacity: loading ? 0.7 : 1,
-            }}
-          >
-            <CheckCheck size={18} />
-            অনুমোদন করুন → সিন তৈরি
-          </button>
+        <button
+          onClick={onApprove}
+          disabled={loading}
+          className="flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-[var(--gradient-brand)] text-white text-xs sm:text-sm font-semibold cursor-pointer shadow-md disabled:opacity-50"
+        >
+          <CheckCheck size={16} />
+          <span>অনুমোদন করুন → সিন তৈরি</span>
+        </button>
       </div>
     </div>
   );

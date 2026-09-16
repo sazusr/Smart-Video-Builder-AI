@@ -28,13 +28,7 @@ export default function StoryPreview({ story, onApprove, onRegenerate, onEdit, l
     setEditing(false);
   };
 
-  const cardStyle: React.CSSProperties = {
-    background: 'var(--bg-panel)',
-    border: '1px solid var(--border-light)',
-    borderRadius: 20,
-    padding: '20px',
-    marginBottom: 16,
-  };
+  const cardClassName = "bg-[var(--bg-panel)] border border-[var(--border-light)] rounded-2xl p-3.5 sm:p-5 mb-3 sm:mb-4";
 
   const badgeStyle = (color: string): React.CSSProperties => ({
     display: 'inline-flex',
@@ -54,16 +48,16 @@ export default function StoryPreview({ story, onApprove, onRegenerate, onEdit, l
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      style={{ display: 'flex', flexDirection: 'column', gap: 0 }}
+      className="flex flex-col gap-0"
     >
       {/* Title Card */}
-      <div style={cardStyle}>
+      <div className={cardClassName}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 12 }}>
           <div>
             <div style={{ fontSize: 11, fontWeight: 600, color: '#a78bfa', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>
               📖 গল্পের শিরোনাম
             </div>
-            <h2 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-primary)', margin: 0, lineHeight: 1.3 }}>
+            <h2 className="text-lg sm:text-xl md:text-2xl font-black text-[var(--text-primary)] m-0 leading-snug">
               {story.title}
             </h2>
           </div>
@@ -74,17 +68,17 @@ export default function StoryPreview({ story, onApprove, onRegenerate, onEdit, l
             {copiedField === 'title' ? <CheckCheck size={16} color="#22d3a0" /> : <Copy size={16} />}
           </button>
         </div>
-        <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0, fontStyle: 'italic' }}>
+        <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed m-0 italic">
           "{story.logline}"
         </p>
       </div>
 
       {/* Story Arc */}
-      <div style={cardStyle}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
-          🎭 গল্পের গঠন (Story Arc)
+      <div className={cardClassName}>
+        <div className="text-xs sm:text-sm font-bold text-[var(--text-primary)] mb-3 flex items-center gap-1.5">
+          <span>🎭</span> <span>গল্পের গঠন (Story Arc)</span>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
           {[
             { label: 'সূচনা', text: story.storyArc.beginning, color: '#60a5fa', icon: '🌅' },
             { label: 'দ্বন্দ্ব', text: story.storyArc.conflict, color: '#f59e0b', icon: '⚡' },
@@ -97,16 +91,15 @@ export default function StoryPreview({ story, onApprove, onRegenerate, onEdit, l
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
               style={{
-                padding: '14px',
                 background: `${arc.color}08`,
                 border: `1px solid ${arc.color}20`,
-                borderRadius: 14,
               }}
+              className="p-2.5 sm:p-3.5 rounded-xl"
             >
-              <div style={{ fontSize: 12, fontWeight: 700, color: arc.color, marginBottom: 6 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: arc.color, marginBottom: 4 }}>
                 {arc.icon} {arc.label}
               </div>
-              <p style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+              <p className="text-xs text-[var(--text-secondary)] leading-relaxed m-0">
                 {arc.text}
               </p>
             </motion.div>
@@ -115,7 +108,7 @@ export default function StoryPreview({ story, onApprove, onRegenerate, onEdit, l
       </div>
 
       {/* Full Story */}
-      <div style={cardStyle}>
+      <div className={cardClassName}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 6 }}>
             <BookOpen size={16} color="#a78bfa" />
@@ -219,104 +212,65 @@ export default function StoryPreview({ story, onApprove, onRegenerate, onEdit, l
       </div>
 
       {/* Summary */}
-      <div style={cardStyle}>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-          📝 সারসংক্ষেপ
+      <div className={cardClassName}>
+        <div className="text-xs sm:text-sm font-bold text-[var(--text-primary)] mb-2 flex items-center gap-1.5">
+          <span>📝</span> <span>সারসংক্ষেপ</span>
         </div>
-        <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7, margin: 0 }}>
+        <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed m-0">
           {story.summary}
         </p>
       </div>
 
       {/* Characters & Locations */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
-        <div style={cardStyle}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-3 sm:mb-4">
+        <div className="bg-[var(--bg-panel)] border border-[var(--border-light)] rounded-2xl p-3 sm:p-4">
+          <div className="text-xs sm:text-sm font-bold text-[var(--text-primary)] mb-2">
             👤 চরিত্রসমূহ ({story.characters.length})
           </div>
-          {story.characters.map((char, i) => (
-            <div key={i} style={{
-              padding: '6px 10px',
-              background: 'var(--bg-secondary)',
-              borderRadius: 8,
-              fontSize: 13,
-              color: 'var(--text-secondary)',
-              marginBottom: 4,
-            }}>
-              {char}
-            </div>
-          ))}
+          <div className="space-y-1">
+            {story.characters.map((char, i) => (
+              <div key={i} className="px-2.5 py-1 bg-[var(--bg-secondary)] rounded-lg text-xs text-[var(--text-secondary)] truncate">
+                {char}
+              </div>
+            ))}
+          </div>
         </div>
-        <div style={cardStyle}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 10 }}>
+        <div className="bg-[var(--bg-panel)] border border-[var(--border-light)] rounded-2xl p-3 sm:p-4">
+          <div className="text-xs sm:text-sm font-bold text-[var(--text-primary)] mb-2">
             📍 লোকেশন ({story.locations.length})
           </div>
-          {story.locations.map((loc, i) => (
-            <div key={i} style={{
-              padding: '6px 10px',
-              background: 'var(--bg-secondary)',
-              borderRadius: 8,
-              fontSize: 13,
-              color: 'var(--text-secondary)',
-              marginBottom: 4,
-            }}>
-              {loc}
-            </div>
-          ))}
+          <div className="space-y-1">
+            {story.locations.map((loc, i) => (
+              <div key={i} className="px-2.5 py-1 bg-[var(--bg-secondary)] rounded-lg text-xs text-[var(--text-secondary)] truncate">
+                {loc}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div style={{ display: 'flex', gap: 12 }}>
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
         <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.97 }}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           onClick={onRegenerate}
           disabled={loading}
-          style={{
-            flex: 1,
-            padding: '16px',
-            background: 'var(--bg-secondary)',
-            border: '1px solid var(--border-light)',
-            borderRadius: 14,
-            color: 'var(--text-secondary)',
-            fontSize: 14,
-            fontWeight: 600,
-            cursor: loading ? 'not-allowed' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 8,
-          }}
+          className="flex-1 py-2.5 sm:py-3 px-4 rounded-xl border border-[var(--border-light)] bg-[var(--bg-secondary)] text-[var(--text-secondary)] text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
         >
-          <RefreshCw size={16} />
-          🔄 আবার তৈরি করুন
+          <RefreshCw size={14} />
+          <span>🔄 আবার তৈরি করুন</span>
         </motion.button>
 
         <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.97 }}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           onClick={onApprove}
           disabled={loading}
-          style={{
-            flex: 2,
-            padding: '16px',
-            background: 'linear-gradient(135deg, #22d3a0 0%, #10b981 100%)',
-            border: 'none',
-            borderRadius: 14,
-            color: '#fff',
-            fontSize: 15,
-            fontWeight: 700,
-            cursor: loading ? 'not-allowed' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 8,
-            boxShadow: '0 6px 24px rgba(34, 211, 160, 0.3)',
-          }}
+          className="flex-[2] py-3 sm:py-3.5 px-5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-emerald-500/20 disabled:opacity-50"
         >
-          <Check size={18} />
-          ✅ গল্প Approve করুন
+          <Check size={16} />
+          <span>✅ গল্প Approve করুন</span>
         </motion.button>
       </div>
     </motion.div>

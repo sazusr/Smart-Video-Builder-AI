@@ -1,4 +1,4 @@
-﻿/* â”€â”€ 1. Google Fonts â€” Anek Bangla (must be FIRST) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* â”€â”€ 1. Google Fonts â€” Anek Bangla (must be FIRST) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100;200;300;400;500;600;700;800&display=swap');
 
 /* â”€â”€ 2. Tailwind CSS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
@@ -94,6 +94,15 @@ body {
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-secondary); }
 ::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 99px; }
+
+/* Hide scrollbar for clean mobile touch carousel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 /* Glass Card */
 .glass-card {

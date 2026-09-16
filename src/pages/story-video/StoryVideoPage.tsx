@@ -309,34 +309,44 @@ export const StoryVideoPage: React.FC = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: "'Anek Bangla', sans-serif" }}>
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]" style={{ fontFamily: "'Anek Bangla', sans-serif" }}>
       {/* Header */}
-      <header style={{ position: 'sticky', top: 0, zIndex: 50, backgroundColor: 'var(--bg-card)', borderBottom: '1px solid var(--border)', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <button onClick={() => navigate('/dashboard')} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '8px', borderRadius: '8px' }}>
-          <ArrowLeft size={24} />
+      <header className="sticky top-0 z-40 bg-[var(--bg-card)]/95 backdrop-blur-md border-b border-[var(--border)] px-3 py-2 sm:px-6 sm:py-3.5 flex items-center gap-2.5 sm:gap-4 transition-all">
+        <button
+          onClick={() => navigate('/dashboard')}
+          className="p-1.5 sm:p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
+          title="ড্যাশবোর্ডে ফিরুন"
+        >
+          <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
-        <div style={{ flex: 1 }}>
-          <h1 style={{ fontSize: '20px', fontWeight: 600, margin: 0 }}>🎬 AI Story Video Generator</h1>
-          {store.project?.title && <p style={{ fontSize: '14px', color: 'var(--text-secondary)', margin: '4px 0 0' }}>{store.project.title}</p>}
+        <div className="flex-1 min-w-0">
+          <h1 className="text-base sm:text-lg md:text-xl font-bold truncate flex items-center gap-1.5">
+            <span>🎬</span> <span className="truncate">AI Story Video Generator</span>
+          </h1>
+          {store.project?.title && (
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] truncate m-0">
+              {store.project.title}
+            </p>
+          )}
         </div>
       </header>
 
       {/* Main Content */}
-      <main style={{ maxWidth: '800px', margin: '0 auto', padding: '24px 16px', paddingBottom: '100px' }}>
+      <main className="max-w-3xl mx-auto px-2.5 py-3 sm:px-4 sm:py-6 pb-20 sm:pb-28">
         <ProgressTracker currentStep={store.currentStep} onStepClick={handleStepClick} canNavigateTo={canNavigateTo} />
 
         {store.error && (
-          <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.5)', color: '#ef4444', padding: '12px 16px', borderRadius: '8px', marginBottom: '24px', display: 'flex', justifyContent: 'center' }}>
+          <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm mb-4 text-center">
             {store.error}
           </div>
         )}
 
-        <div style={{ position: 'relative' }}>
+        <div className="relative">
           <AnimatePresence mode="wait">
             <motion.div
               key={store.currentStep}
               initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}
-              style={{ backgroundColor: 'transparent', borderRadius: '24px', overflow: 'hidden' }}
+              className="bg-transparent rounded-2xl overflow-hidden"
             >
               {store.currentStep === 'input' && (
                 <StoryInputForm onSubmit={handleGenerateStory} loading={store.loading} initialInput={store.project?.input} apiKey={apiKey} />
@@ -386,14 +396,30 @@ export const StoryVideoPage: React.FC = () => {
       </main>
 
       {/* Bottom Navigation */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: 'var(--bg-card)', borderTop: '1px solid var(--border)', padding: '16px 24px', display: 'flex', justifyContent: 'center', zIndex: 40 }}>
-        <div style={{ maxWidth: '800px', width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <button onClick={handlePrev} disabled={!prevStep} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '12px', border: '1px solid var(--border)', backgroundColor: 'var(--bg-secondary)', color: prevStep ? 'var(--text-primary)' : 'var(--text-muted)', cursor: prevStep ? 'pointer' : 'not-allowed', fontWeight: 500, opacity: prevStep ? 1 : 0.5, transition: 'all 0.2s' }}>
-            <ChevronLeft size={20} /> ← আগে
+      <div className="fixed bottom-0 left-0 right-0 bg-[var(--bg-card)]/95 backdrop-blur-md border-t border-[var(--border)] px-3 py-2 sm:px-6 sm:py-3 z-40 flex justify-center shadow-lg">
+        <div className="max-w-3xl w-full flex justify-between items-center gap-2">
+          <button
+            onClick={handlePrev}
+            disabled={!prevStep}
+            className={`flex items-center gap-1 sm:gap-2 px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl border border-[var(--border)] text-xs sm:text-sm font-medium transition-all ${
+              prevStep
+                ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:bg-[var(--border)] cursor-pointer opacity-100'
+                : 'bg-[var(--bg-secondary)]/50 text-[var(--text-muted)] cursor-not-allowed opacity-40'
+            }`}
+          >
+            <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> <span>পূর্ববর্তী</span>
           </button>
           
-          <button onClick={handleNext} disabled={!nextStep || !canNavigateTo(nextStep)} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '12px', border: 'none', backgroundColor: (!nextStep || !canNavigateTo(nextStep)) ? 'var(--bg-secondary)' : 'var(--accent-primary)', background: (!nextStep || !canNavigateTo(nextStep)) ? undefined : 'var(--gradient-brand)', color: (!nextStep || !canNavigateTo(nextStep)) ? 'var(--text-muted)' : '#fff', cursor: (!nextStep || !canNavigateTo(nextStep)) ? 'not-allowed' : 'pointer', fontWeight: 500, opacity: (!nextStep || !canNavigateTo(nextStep)) ? 0.5 : 1, transition: 'all 0.2s' }}>
-            পরের ধাপ → <ChevronRight size={20} />
+          <button
+            onClick={handleNext}
+            disabled={!nextStep || !canNavigateTo(nextStep)}
+            className={`flex items-center gap-1 sm:gap-2 px-4 py-2 sm:px-6 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm ${
+              !nextStep || !canNavigateTo(nextStep)
+                ? 'bg-[var(--bg-secondary)] text-[var(--text-muted)] cursor-not-allowed opacity-40'
+                : 'bg-[var(--gradient-brand)] text-white hover:opacity-90 cursor-pointer shadow-indigo-500/20'
+            }`}
+          >
+            <span>পরবর্তী ধাপ</span> <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>

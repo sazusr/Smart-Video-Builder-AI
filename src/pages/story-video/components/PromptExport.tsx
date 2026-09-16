@@ -143,41 +143,41 @@ export default function PromptExport({ scenes, characterBible, aspectRatio, proj
   };
 
   return (
-    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div className="w-full flex flex-col gap-4 sm:gap-6">
 
       {/* Header */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h2 style={{ fontSize: '22px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px', color: 'var(--text-primary)' }}>
-            📋 Veo Video Prompts
+          <h2 className="text-lg sm:text-xl md:text-2xl font-black flex items-center gap-2 m-0 mb-1.5 text-[var(--text-primary)]">
+            <span>📋</span> <span>Veo Video Prompts</span>
           </h2>
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: 500, padding: '4px 12px', borderRadius: '99px', background: 'var(--bg-secondary)', color: 'var(--text-secondary)' }}>
-              <Film size={13} /> {scenes.length} সিন
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-secondary)]">
+              <Film size={12} /> <span>{scenes.length} সিন</span>
             </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: 500, padding: '4px 12px', borderRadius: '99px', background: 'var(--bg-secondary)', color: 'var(--text-secondary)' }}>
-              <Clock size={13} /> {totalDuration} সেকেন্ড
+            <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-secondary)]">
+              <Clock size={12} /> <span>{totalDuration} সেকেন্ড</span>
             </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: 500, padding: '4px 12px', borderRadius: '99px', background: 'var(--bg-secondary)', color: 'var(--text-secondary)' }}>
-              {aspectRatio}
+            <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-secondary)]">
+              <span>{aspectRatio}</span>
             </span>
           </div>
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+        <div className="flex gap-2 flex-wrap">
           <button onClick={handleCopyAll}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 18px', borderRadius: '10px', fontWeight: 600, cursor: 'pointer', border: '1px solid var(--border-light)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', fontSize: '13px' }}>
-            {copiedAll ? <CheckCheck size={16} color="#4ade80" /> : <Copy size={16} />}
-            {copiedAll ? 'কপি হয়েছে' : 'সবগুলো কপি'}
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-semibold cursor-pointer border border-[var(--border-light)] bg-[var(--bg-secondary)] text-[var(--text-primary)] text-xs sm:text-sm">
+            {copiedAll ? <CheckCheck size={14} color="#4ade80" /> : <Copy size={14} />}
+            <span>{copiedAll ? 'কপি হয়েছে' : 'সবগুলো কপি'}</span>
           </button>
           <button onClick={handleExportText}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 18px', borderRadius: '10px', fontWeight: 600, cursor: 'pointer', border: 'none', background: 'var(--gradient-brand)', color: '#fff', fontSize: '13px' }}>
-            <Download size={16} /> ডাউনলোড
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-semibold cursor-pointer border-none bg-[var(--gradient-brand)] text-white text-xs sm:text-sm">
+            <Download size={14} /> <span>ডাউনলোড</span>
           </button>
         </div>
       </div>
 
       {/* Progress Tracker */}
-      <div style={{ background: 'var(--bg-panel)', border: '1px solid var(--border-light)', borderRadius: '16px', padding: '16px 20px' }}>
+      <div className="bg-[var(--bg-panel)] border border-[var(--border-light)] rounded-2xl p-3 sm:p-4">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)' }}>
@@ -289,7 +289,7 @@ export default function PromptExport({ scenes, characterBible, aspectRatio, proj
                 transition: 'background 0.4s',
               }} />
 
-              <div style={{ padding: '20px 20px 0 20px' }}>
+              <div className="p-3 sm:p-5 pb-0">
                 {/* Scene header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>

@@ -174,27 +174,26 @@ const GENRE_OPTIONS: { value: StoryGenre; label: string; emoji: string; sub: str
   { value: "romantic",         emoji: "💕", label: "রোমান্টিক",        sub: "প্রেমের গল্প" },
 ];
 
-// ── Visual Style options ──────────────────────────────────────────────────
-const VISUAL_STYLE_EMOJIS: Record<string, string> = {
-  cinematic_realistic: "🎬",
-  ultra_realistic:     "📷",
-  documentary:         "📹",
-  "3d_animation":      "🎮",
-  anime:               "🌸",
-  fantasy:             "🔮",
-  film_look:           "🎞️",
-};
+const VISUAL_STYLE_DATA: { value: VisualStyle; emoji: string; label: string; sub: string }[] = [
+  { value: "cinematic_realistic", emoji: "🎬", label: "সিনেমাটিক", sub: "মুভি লুক" },
+  { value: "ultra_realistic",     emoji: "📷", label: "রিয়েলিস্টিক", sub: "বাস্তবসম্মত" },
+  { value: "documentary",         emoji: "📹", label: "ডকুমেন্টারি", sub: "রিয়েল ফুটেজ" },
+  { value: "film_look",           emoji: "🎞️", label: "ফিল্ম লুক", sub: "৩৫ মিমি ক্লাসিক" },
+  { value: "3d_animation",        emoji: "🎮", label: "৩ডি অ্যানিমেশন", sub: "৩ডি স্টাইল" },
+  { value: "anime",               emoji: "🌸", label: "অ্যানিমে", sub: "জাপানিজ আর্ট" },
+  { value: "fantasy",             emoji: "🔮", label: "ফ্যান্টাসি", sub: "মায়াবী রূপ" },
+];
 
 
 // ── Section Title helper ──────────────────────────────────────────────────
 function SectionTitle({ icon, title, sub }: { icon: React.ReactNode; title: string; sub?: string }) {
   return (
-    <div style={{ marginBottom: 14 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: sub ? 2 : 0 }}>
-        <span style={{ display: "flex", alignItems: "center", color: "#a78bfa" }}>{icon}</span>
-        <span style={{ fontSize: 15, fontWeight: 700, color: "var(--text-primary)" }}>{title}</span>
+    <div className="mb-2 sm:mb-2.5">
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        <span className="text-violet-400 flex items-center text-sm sm:text-base">{icon}</span>
+        <h3 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] tracking-wide">{title}</h3>
       </div>
-      {sub && <p style={{ fontSize: 12, color: "var(--text-muted)", margin: 0, paddingLeft: 26 }}>{sub}</p>}
+      {sub && <p className="text-[10px] sm:text-xs text-[var(--text-muted)] mt-0.5 leading-tight pl-5 sm:pl-6">{sub}</p>}
     </div>
   );
 }
@@ -270,81 +269,58 @@ export default function StoryInputForm({ onSubmit, loading, initialInput, apiKey
     onSubmit(input);
   };
 
-  const activeCard = (active: boolean, color = "#6c47ff"): React.CSSProperties => ({
-    background:   active ? `${color}18` : "var(--bg-secondary)",
-    border:       `2px solid ${active ? color : "var(--border-light)"}`,
-    borderRadius: 14,
-    cursor:       "pointer",
-    transition:   "all 0.2s",
-    position:     "relative",
-  });
+  const activeCardClass = (active: boolean, activeBorder: string, activeBg: string) =>
+    `rounded-xl border transition-all cursor-pointer select-none ${
+      active
+        ? `${activeBorder} ${activeBg} shadow-sm`
+        : "border-[var(--border-light)] bg-[var(--bg-secondary)] hover:border-violet-500/40 opacity-90"
+    }`;
 
   return (
     <motion.form
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.3 }}
       onSubmit={handleSubmit}
-      style={{ display: "flex", flexDirection: "column", gap: 16 }}
+      className="flex flex-col gap-3 sm:gap-4"
     >
 
       {/* ── 1. STORY IDEA SECTION ────────────────────────────────────── */}
-      <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-light)", borderRadius: 20, padding: "22px 20px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
+      <div className="bg-[var(--bg-panel)] border border-[var(--border-light)] rounded-2xl p-3 sm:p-4">
+        <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5">
           <SectionTitle
-            icon={<Sparkles size={18} />}
+            icon={<Sparkles size={16} />}
             title="গল্পের মূল ধারণা ও টপিক"
-            sub="যেকোনো টপিকে চাপ দিলে নতুন গল্প আসবে — 'AI দিয়ে নতুন আইডিয়া' চাপলে সম্পূর্ণ নতুন গল্প লিখবে"
+            sub="টপিক চাপলে নতুন গল্প আসবে — AI দিয়েও সম্পূর্ণ নতুন গল্প আনতে পারেন"
           />
 
-          {/* AI Generate Button */}
+          {/* Compact AI Generate Button */}
           <button
             type="button"
             onClick={handleGenerateWithAi}
             disabled={aiGenerating}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "9px 16px",
-              borderRadius: 12,
-              background: aiGenerating ? "#334155" : "linear-gradient(135deg, #6c47ff, #3b82f6)",
-              border: "none",
-              color: "#fff",
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: aiGenerating ? "wait" : "pointer",
-              boxShadow: "0 4px 16px rgba(108, 71, 255, 0.25)",
-              transition: "transform 0.15s, opacity 0.15s",
-            }}
-            onMouseOver={e => !aiGenerating && (e.currentTarget.style.opacity = "0.9")}
-            onMouseOut={e => (e.currentTarget.style.opacity = "1")}
+            className="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-blue-600 shadow-sm active:scale-95 transition-all cursor-pointer"
           >
             {aiGenerating ? (
               <>
-                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                  style={{ width: 14, height: 14, border: "2px solid #555", borderTopColor: "#fff", borderRadius: "50%" }} />
-                AI ভাবছে...
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                  className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full"
+                />
+                <span className="text-[11px] sm:text-xs">ভাবছে...</span>
               </>
             ) : (
               <>
-                <Wand2 size={15} />
-                ✨ AI দিয়ে নতুন আইডিয়া আনুন
+                <Wand2 size={13} />
+                <span className="text-[11px] sm:text-xs">✨ AI আইডিয়া</span>
               </>
             )}
           </button>
         </div>
 
-        {/* Suggestion Chips */}
-        <div style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 8,
-          marginBottom: 14,
-          maxHeight: 180,
-          overflowY: "auto",
-          paddingBottom: 4,
-        }}>
+        {/* Suggestion Chips — single-line smooth horizontal scroll on mobile */}
+        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pb-1.5 mb-2.5 -mx-1 px-1">
           {CATEGORY_SUGGESTIONS.map(cat => {
             const isSelected = activeCategory === cat.label;
             return (
@@ -352,104 +328,45 @@ export default function StoryInputForm({ onSubmit, loading, initialInput, apiKey
                 key={cat.label}
                 type="button"
                 onClick={() => handleSelectCategory(cat)}
-                style={{
-                  padding: "7px 14px",
-                  background: isSelected ? "rgba(108, 71, 255, 0.18)" : "var(--bg-overlay-10)",
-                  border: `1.5px solid ${isSelected ? "#8b5cf6" : "var(--border)"}`,
-                  borderRadius: 20,
-                  fontSize: 12,
-                  fontWeight: isSelected ? 700 : 500,
-                  color: isSelected ? "#a78bfa" : "var(--text-secondary)",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  whiteSpace: "nowrap",
-                }}
+                className={`shrink-0 inline-flex items-center gap-1 py-1 px-2.5 sm:py-1.5 sm:px-3 rounded-full text-[11px] sm:text-xs transition-all cursor-pointer ${
+                  isSelected
+                    ? "bg-violet-600/20 text-violet-300 border border-violet-500 font-bold"
+                    : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] border border-[var(--border-light)] font-medium hover:border-violet-500/50"
+                }`}
               >
                 <span>{cat.label}</span>
                 {cat.badge && (
-                  <span style={{
-                    fontSize: 9,
-                    fontWeight: 800,
-                    padding: "1px 6px",
-                    borderRadius: 99,
-                    background: "linear-gradient(90deg, #ff416c, #ff4b2b)",
-                    color: "#fff",
-                  }}>
+                  <span className="text-[8px] font-black px-1.5 py-0.2 rounded-full bg-gradient-to-r from-rose-500 to-orange-500 text-white leading-tight">
                     {cat.badge}
                   </span>
                 )}
-                <RefreshCw size={11} style={{ opacity: isSelected ? 0.9 : 0.4 }} />
+                <RefreshCw size={9} className={isSelected ? "opacity-90" : "opacity-40"} />
               </button>
             );
           })}
         </div>
 
         {/* Textarea */}
-        <div style={{ position: "relative" }}>
+        <div className="relative">
           <textarea
             value={input.storyHint}
             onChange={e => update("storyHint", e.target.value.slice(0, 1000))}
-            placeholder={"এখানে আপনার গল্পের বিস্তারিত বা সারসংক্ষেপ লিখুন...\n\nযেমন: ১৯৮৫ সালে নিউ ইয়র্কের একটি ব্যাংকে ঘটে যাওয়া রহস্যময় ডাকাতি, যেখানে টাকা উদ্ধার হলেও মূল চোর কখনো ধরা পড়েনি..."}
+            placeholder={"এখানে আপনার গল্পের বিস্তারিত বা সারসংক্ষেপ লিখুন...\n\nযেমন: ১৯৮৫ সালে নিউ ইয়র্কের একটি ব্যাংকে ঘটে যাওয়া রহস্যময় ডাকাতি..."}
             required
-            rows={5}
-            style={{
-              width: "100%",
-              padding: "16px",
-              paddingBottom: "36px",
-              background: "var(--bg-secondary)",
-              border: "1.5px solid var(--border-light)",
-              borderRadius: 14,
-              color: "var(--text-primary)",
-              fontSize: 15,
-              lineHeight: 1.65,
-              resize: "vertical",
-              outline: "none",
-              minHeight: 120,
-              boxSizing: "border-box",
-              fontFamily: "inherit",
-              transition: "border-color 0.2s, box-shadow 0.2s",
-            }}
-            onFocus={e => {
-              e.target.style.borderColor = "#6c47ff";
-              e.target.style.boxShadow = "0 0 0 3px rgba(108, 71, 255, 0.15)";
-            }}
-            onBlur={e => {
-              e.target.style.borderColor = "var(--border-light)";
-              e.target.style.boxShadow = "none";
-            }}
+            rows={3}
+            className="w-full p-2.5 sm:p-3 pb-8 text-xs sm:text-sm leading-relaxed bg-[var(--bg-secondary)] border border-[var(--border-light)] rounded-xl text-[var(--text-primary)] focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500/30 transition-all resize-y min-h-[90px] sm:min-h-[110px]"
           />
 
           {/* Bottom Bar inside Textarea */}
-          <div style={{
-            position: "absolute",
-            bottom: 8,
-            left: 12,
-            right: 12,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            pointerEvents: "none",
-          }}>
-            <div style={{ pointerEvents: "auto", display: "flex", gap: 10 }}>
+          <div className="absolute bottom-2 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
+            <div className="flex items-center gap-2.5 pointer-events-auto">
               {input.storyHint && (
                 <button
                   type="button"
                   onClick={() => update("storyHint", "")}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "var(--text-muted)",
-                    fontSize: 11,
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 3,
-                  }}
+                  className="text-[10px] sm:text-xs text-[var(--text-muted)] hover:text-rose-400 flex items-center gap-1 cursor-pointer bg-transparent border-none"
                 >
-                  <X size={12} /> পরিষ্কার করুন
+                  <X size={11} /> পরিষ্কার
                 </button>
               )}
               <button
@@ -458,26 +375,13 @@ export default function StoryInputForm({ onSubmit, loading, initialInput, apiKey
                   const cat = CATEGORY_SUGGESTIONS.find(c => c.label === activeCategory) || CATEGORY_SUGGESTIONS[0];
                   handleSelectCategory(cat);
                 }}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "#8b5cf6",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 4,
-                }}
+                className="text-[10px] sm:text-xs text-violet-400 font-semibold hover:text-violet-300 flex items-center gap-1 cursor-pointer bg-transparent border-none"
               >
-                <Dices size={12} /> অন্য গল্প দেখান
+                <Dices size={11} /> অন্য গল্প
               </button>
             </div>
 
-            <span style={{
-              fontSize: 11,
-              color: input.storyHint.length > 900 ? "#ef4444" : "var(--text-muted)",
-            }}>
+            <span className={`text-[10px] ${input.storyHint.length > 900 ? "text-rose-500" : "text-[var(--text-muted)]"}`}>
               {input.storyHint.length} / 1000
             </span>
           </div>
@@ -485,18 +389,23 @@ export default function StoryInputForm({ onSubmit, loading, initialInput, apiKey
       </div>
 
       {/* ── 2. LANGUAGE ──────────────────────────────────────────────────── */}
-      <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-light)", borderRadius: 20, padding: "22px 20px" }}>
-        <SectionTitle icon={<Globe size={16} />} title="ভাষা বেছে নিন" sub="গল্পটি কোন ভাষায় তৈরি হবে?" />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
+      <div className="bg-[var(--bg-panel)] border border-[var(--border-light)] rounded-2xl p-3 sm:p-4">
+        <SectionTitle icon={<Globe size={15} />} title="ভাষা বেছে নিন" sub="গল্পের ভয়েসওভার ও টেক্সট কোন ভাষায় হবে?" />
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-3">
           {LANGUAGE_OPTIONS.map(opt => {
             const active = input.language === opt.value;
             return (
-              <button key={opt.value} type="button" onClick={() => update("language", opt.value)}
-                style={{ ...activeCard(active, "#3b82f6"), padding: "16px 12px", textAlign: "center" }}>
-                <div style={{ fontSize: 28, marginBottom: 6 }}>{opt.flag}</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: active ? "#60a5fa" : "var(--text-primary)", marginBottom: 3 }}>{opt.label}</div>
-                <div style={{ fontSize: 11, color: "var(--text-muted)", lineHeight: 1.3 }}>{opt.sub}</div>
-                {active && <div style={{ position: "absolute", top: 8, right: 10, width: 8, height: 8, borderRadius: "50%", background: "#3b82f6" }} />}
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => update("language", opt.value)}
+                className={`p-2 sm:p-3 text-center ${activeCardClass(active, "border-blue-500", "bg-blue-600/15")}`}
+              >
+                <div className="text-xl sm:text-2xl mb-1">{opt.flag}</div>
+                <div className={`text-xs sm:text-sm font-bold mb-0.5 ${active ? "text-blue-400" : "text-[var(--text-primary)]"}`}>
+                  {opt.label}
+                </div>
+                <div className="text-[9px] sm:text-xs text-[var(--text-muted)] truncate">{opt.sub}</div>
               </button>
             );
           })}
@@ -504,25 +413,28 @@ export default function StoryInputForm({ onSubmit, loading, initialInput, apiKey
       </div>
 
       {/* ── 3. DURATION ──────────────────────────────────────────────────── */}
-      <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-light)", borderRadius: 20, padding: "22px 20px" }}>
-        <SectionTitle icon={<Clock size={16} />} title="ভিডিওর দৈর্ঘ্য" sub="ভিডিওটি কতক্ষণের হবে?" />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8 }}>
+      <div className="bg-[var(--bg-panel)] border border-[var(--border-light)] rounded-2xl p-3 sm:p-4">
+        <SectionTitle icon={<Clock size={15} />} title="ভিডিওর সময়কাল" sub="গল্পটি কত মিনিটের তৈরি করতে চান?" />
+        <div className="grid grid-cols-5 gap-1 sm:gap-2">
           {DURATION_OPTIONS.map(opt => {
             const active = input.duration === opt.value;
             return (
-              <button key={opt.value} type="button" onClick={() => update("duration", opt.value)}
-                style={{ ...activeCard(active, "#8b5cf6"), padding: "14px 6px", textAlign: "center" }}>
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => update("duration", opt.value)}
+                className={`p-1.5 sm:p-2.5 text-center relative ${activeCardClass(active, "border-violet-500", "bg-violet-600/15")}`}
+              >
                 {opt.badge && (
-                  <div style={{
-                    position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)",
-                    background: "linear-gradient(90deg,#ff6b35,#f7931e)",
-                    color: "#fff", fontSize: 9, fontWeight: 800,
-                    padding: "2px 8px", borderRadius: 20, whiteSpace: "nowrap",
-                  }}>{opt.badge}</div>
+                  <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[7px] sm:text-[8px] font-black px-1.5 py-0.2 rounded-full whitespace-nowrap shadow-sm">
+                    {opt.badge}
+                  </span>
                 )}
-                <div style={{ fontSize: 22, marginBottom: 4 }}>{opt.emoji}</div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: active ? "#a78bfa" : "var(--text-primary)", marginBottom: 2 }}>{opt.label}</div>
-                <div style={{ fontSize: 10, color: "var(--text-muted)", lineHeight: 1.3 }}>{opt.sub}</div>
+                <div className="text-base sm:text-lg mb-0.5">{opt.emoji}</div>
+                <div className={`text-[11px] sm:text-xs font-bold leading-tight ${active ? "text-violet-400" : "text-[var(--text-primary)]"}`}>
+                  {opt.label}
+                </div>
+                <div className="text-[8px] sm:text-[10px] text-[var(--text-muted)] truncate mt-0.5">{opt.sub}</div>
               </button>
             );
           })}
@@ -530,17 +442,32 @@ export default function StoryInputForm({ onSubmit, loading, initialInput, apiKey
       </div>
 
       {/* ── 4. GENRE ─────────────────────────────────────────────────────── */}
-      <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-light)", borderRadius: 20, padding: "22px 20px" }}>
-        <SectionTitle icon={<Film size={16} />} title="গল্পের ধরন (Genre)" sub="আপনার গল্প কোন ধরনের? প্রতিটি ক্যাটাগরির জন্য আলাদা ভিডিও স্টাইল তৈরি হবে।" />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
+      <div className="bg-[var(--bg-panel)] border border-[var(--border-light)] rounded-2xl p-3 sm:p-4">
+        <SectionTitle icon={<Film size={15} />} title="ভিডিও ক্যাটাগরি ও ধরন" sub="ইউএস ক্রাইম, স্ক্যান্ডাল, কমেডি বা হরর" />
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-1.5 sm:gap-2">
           {GENRE_OPTIONS.map(opt => {
             const active = input.genre === opt.value;
+            const borderCol = opt.isHot ? "border-rose-500" : "border-amber-500";
+            const bgCol = opt.isHot ? "bg-rose-500/15" : "bg-amber-500/15";
             return (
-              <button key={opt.value} type="button" onClick={() => update("genre", opt.value as StoryGenre)}
-                style={{ ...activeCard(active, "#f59e0b"), padding: "14px 8px", textAlign: "center" }}>
-                <div style={{ fontSize: 22, marginBottom: 5 }}>{opt.emoji}</div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: active ? "#f59e0b" : "var(--text-primary)", marginBottom: 2 }}>{opt.label}</div>
-                <div style={{ fontSize: 10, color: "var(--text-muted)" }}>{opt.sub}</div>
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => update("genre", opt.value)}
+                className={`p-1.5 sm:p-2.5 text-center relative flex flex-col items-center justify-center ${activeCardClass(active, borderCol, bgCol)}`}
+              >
+                {opt.isHot && (
+                  <span className="absolute top-1 right-1 text-[7px] sm:text-[8px] font-black text-rose-500 bg-rose-500/15 px-1 rounded">
+                    HOT
+                  </span>
+                )}
+                <div className="text-lg sm:text-xl mb-1">{opt.emoji}</div>
+                <div className={`text-[11px] sm:text-xs font-bold leading-tight ${
+                  active ? (opt.isHot ? "text-rose-400" : "text-amber-400") : "text-[var(--text-primary)]"
+                }`}>
+                  {opt.label}
+                </div>
+                <div className="text-[8px] sm:text-[10px] text-[var(--text-muted)] truncate mt-0.5">{opt.sub}</div>
               </button>
             );
           })}
@@ -548,18 +475,23 @@ export default function StoryInputForm({ onSubmit, loading, initialInput, apiKey
       </div>
 
       {/* ── 5. ASPECT RATIO ──────────────────────────────────────────────── */}
-      <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-light)", borderRadius: 20, padding: "22px 20px" }}>
-        <SectionTitle icon={<Monitor size={16} />} title="ভিডিও ফরম্যাট" sub="ভিডিওটি কোথায় আপলোড করবেন?" />
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div className="bg-[var(--bg-panel)] border border-[var(--border-light)] rounded-2xl p-3 sm:p-4">
+        <SectionTitle icon={<Monitor size={15} />} title="ভিডিও ফরম্যাট" sub="কোথায় আপলোড করবেন?" />
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
           {ASPECT_OPTIONS.map(opt => {
             const active = input.aspectRatio === opt.value;
             return (
-              <button key={opt.value} type="button" onClick={() => update("aspectRatio", opt.value)}
-                style={{ ...activeCard(active, "#10b981"), padding: "20px 16px", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
-                <div style={{ fontSize: 32 }}>{opt.emoji}</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: active ? "#10b981" : "var(--text-primary)" }}>{opt.label}</div>
-                <div style={{ fontSize: 12, color: "var(--text-muted)" }}>{opt.sub}</div>
-                {active && <div style={{ position: "absolute", top: 8, right: 10, width: 8, height: 8, borderRadius: "50%", background: "#10b981" }} />}
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => update("aspectRatio", opt.value)}
+                className={`p-2.5 sm:p-3.5 text-center flex flex-col items-center gap-0.5 ${activeCardClass(active, "border-emerald-500", "bg-emerald-600/15")}`}
+              >
+                <div className="text-2xl sm:text-3xl">{opt.emoji}</div>
+                <div className={`text-xs sm:text-sm font-bold ${active ? "text-emerald-400" : "text-[var(--text-primary)]"}`}>
+                  {opt.label}
+                </div>
+                <div className="text-[9px] sm:text-xs text-[var(--text-muted)]">{opt.sub}</div>
               </button>
             );
           })}
@@ -567,16 +499,23 @@ export default function StoryInputForm({ onSubmit, loading, initialInput, apiKey
       </div>
 
       {/* ── 6. VISUAL STYLE ──────────────────────────────────────────────── */}
-      <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-light)", borderRadius: 20, padding: "22px 20px" }}>
-        <SectionTitle icon={<Palette size={16} />} title="ভিডিওর ভিজুয়্যাল স্টাইল" sub="গল্পটি দেখতে কেমন হবে?" />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8 }}>
-          {Object.entries(VISUAL_STYLE_LABELS).map(([value, label]) => {
-            const active = input.visualStyle === value;
+      <div className="bg-[var(--bg-panel)] border border-[var(--border-light)] rounded-2xl p-3 sm:p-4">
+        <SectionTitle icon={<Palette size={15} />} title="ভিজুয়্যাল স্টাইল" sub="ভিডিওর চিত্রায়ণ ও লুক কেমন হবে?" />
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2">
+          {VISUAL_STYLE_DATA.map(item => {
+            const active = input.visualStyle === item.value;
             return (
-              <button key={value} type="button" onClick={() => update("visualStyle", value as VisualStyle)}
-                style={{ ...activeCard(active, "#ec4899"), padding: "14px 8px", textAlign: "center" }}>
-                <div style={{ fontSize: 22, marginBottom: 5 }}>{VISUAL_STYLE_EMOJIS[value] || "🎨"}</div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: active ? "#ec4899" : "var(--text-primary)", lineHeight: 1.3 }}>{label}</div>
+              <button
+                key={item.value}
+                type="button"
+                onClick={() => update("visualStyle", item.value)}
+                className={`p-2 sm:p-2.5 text-center flex flex-col items-center ${activeCardClass(active, "border-pink-500", "bg-pink-600/15")}`}
+              >
+                <div className="text-lg sm:text-xl mb-1">{item.emoji}</div>
+                <div className={`text-[11px] sm:text-xs font-bold leading-tight ${active ? "text-pink-400" : "text-[var(--text-primary)]"}`}>
+                  {item.label}
+                </div>
+                <div className="text-[8px] sm:text-[10px] text-[var(--text-muted)] truncate mt-0.5">{item.sub}</div>
               </button>
             );
           })}
@@ -587,43 +526,31 @@ export default function StoryInputForm({ onSubmit, loading, initialInput, apiKey
       <motion.button
         type="submit"
         disabled={!input.storyHint.trim() || loading}
-        whileHover={{ scale: loading ? 1 : 1.015 }}
-        whileTap={{ scale: loading ? 1 : 0.985 }}
-        style={{
-          width: "100%",
-          padding: "20px 24px",
-          background: loading || !input.storyHint.trim()
-            ? "var(--bg-secondary)"
-            : "linear-gradient(135deg, #6c47ff 0%, #4f46e5 50%, #7c3aed 100%)",
-          border: "none",
-          borderRadius: 18,
-          color: loading || !input.storyHint.trim() ? "var(--text-muted)" : "#fff",
-          fontSize: 18,
-          fontWeight: 800,
-          cursor: loading || !input.storyHint.trim() ? "not-allowed" : "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 12,
-          boxShadow: loading || !input.storyHint.trim() ? "none" : "0 12px 40px rgba(108, 71, 255, 0.35)",
-          transition: "all 0.3s",
-          marginTop: 4,
-          letterSpacing: 0.3,
-        }}
+        whileHover={{ scale: loading ? 1 : 1.01 }}
+        whileTap={{ scale: loading ? 1 : 0.99 }}
+        className={`w-full py-3 sm:py-3.5 px-4 rounded-xl text-sm sm:text-base font-extrabold flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer ${
+          loading || !input.storyHint.trim()
+            ? "bg-[var(--bg-secondary)] text-[var(--text-muted)] cursor-not-allowed"
+            : "bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 text-white shadow-violet-500/20 active:scale-[0.99]"
+        }`}
       >
         {loading ? (
           <>
-            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-              style={{ width: 22, height: 22, border: "2.5px solid #555", borderTopColor: "#aaa", borderRadius: "50%" }} />
-            AI গল্প তৈরি করছে...
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+            />
+            <span>AI গল্প তৈরি করছে...</span>
           </>
         ) : (
           <>
-            <Sparkles size={22} />
-            ✨ আমার গল্প তৈরি করুন
+            <Sparkles size={17} />
+            <span>✨ আমার গল্প তৈরি করুন</span>
           </>
         )}
       </motion.button>
     </motion.form>
   );
 }
+

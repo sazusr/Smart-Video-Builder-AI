@@ -238,62 +238,62 @@ export default function AudioScript({ scenes, project, apiKeys = [] }: AudioScri
     <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
 
       {/* Header */}
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: "var(--text-primary)", margin: "0 0 10px", display: "flex", alignItems: "center", gap: 10 }}>
-            🎤 AI অডিও স্ক্রিপ্ট
+          <h2 className="text-lg sm:text-xl md:text-2xl font-black text-[var(--text-primary)] m-0 mb-2 flex items-center gap-2">
+            <span>🎤</span> <span>AI অডিও স্ক্রিপ্ট</span>
           </h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {[
               { icon: "🎬", label: `${scenes.length} সিন` },
               { icon: "⏱️", label: `${totalDuration} সেকেন্ড` },
-              { icon: "🎙️", label: "Gemini TTS রেডি" },
+              { icon: "🎙️", label: "Gemini TTS" },
             ].map((b, i) => (
-              <span key={i} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 13, fontWeight: 500, padding: "4px 12px", borderRadius: 99, background: "var(--bg-secondary)", color: "var(--text-secondary)" }}>
-                {b.icon} {b.label}
+              <span key={i} className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-secondary)]">
+                <span>{b.icon}</span> <span>{b.label}</span>
               </span>
             ))}
           </div>
         </div>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <div className="flex gap-2 flex-wrap">
           <button onClick={handleCopyAll}
-            style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 18px", borderRadius: 10, fontWeight: 600, cursor: "pointer", border: "1px solid var(--border-light)", background: "var(--bg-secondary)", color: "var(--text-primary)", fontSize: 13 }}>
-            {copiedAll ? <CheckCheck size={16} color="#4ade80" /> : <Copy size={16} />}
-            {copiedAll ? "কপি হয়েছে ✓" : "সম্পূর্ণ স্ক্রিপ্ট কপি"}
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-semibold cursor-pointer border border-[var(--border-light)] bg-[var(--bg-secondary)] text-[var(--text-primary)] text-xs sm:text-sm">
+            {copiedAll ? <CheckCheck size={14} color="#4ade80" /> : <Copy size={14} />}
+            <span>{copiedAll ? "কপি হয়েছে ✓" : "স্ক্রিপ্ট কপি"}</span>
           </button>
           <button onClick={handleDownload}
-            style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 18px", borderRadius: 10, fontWeight: 600, cursor: "pointer", border: "none", background: "var(--gradient-brand)", color: "#fff", fontSize: 13 }}>
-            <Download size={16} /> TXT ডাউনলোড
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-semibold cursor-pointer border-none bg-[var(--gradient-brand)] text-white text-xs sm:text-sm">
+            <Download size={14} /> <span>ডাউনলোড</span>
           </button>
         </div>
       </div>
 
       {/* Global TTS Config — "Generate All" */}
-      <div style={{ background: "linear-gradient(135deg,#6c47ff15,#3b82f615)", border: "1px solid #6c47ff30", borderRadius: 18, padding: "20px 22px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-          <div style={{ background: "#6c47ff20", color: "#a78bfa", padding: 8, borderRadius: 10 }}>
-            <Music size={18} />
+      <div className="bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-blue-500/10 border border-indigo-500/25 rounded-2xl p-3 sm:p-5">
+        <div className="flex items-center gap-2.5 mb-3 sm:mb-4">
+          <div className="bg-indigo-500/20 text-indigo-400 p-2 rounded-lg shrink-0">
+            <Music size={16} />
           </div>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 800, color: "var(--text-primary)" }}>AI ভয়েসওভার — সব সিন একসাথে</div>
-            <div style={{ fontSize: 12, color: "var(--text-muted)" }}>ভয়েস ও স্টাইল বেছে নিন, তারপর সব সিনের অডিও তৈরি করুন</div>
+            <div className="text-sm sm:text-base font-bold text-[var(--text-primary)] leading-snug">AI ভয়েসওভার — সব সিন একসাথে</div>
+            <div className="text-xs text-[var(--text-muted)]">ভয়েস ও স্টাইল বেছে নিন, তারপর সব সিনের অডিও তৈরি করুন</div>
           </div>
         </div>
 
         {/* Voice grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8, marginBottom: 14 }}>
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 sm:gap-2 mb-3">
           {VOICE_OPTIONS.map(v => (
             <button key={v.id} type="button" onClick={() => setGlobalVoice(v.id)}
               style={{
                 background: globalVoice === v.id ? `${v.color}20` : "var(--bg-secondary)",
                 border: `2px solid ${globalVoice === v.id ? v.color : "transparent"}`,
-                borderRadius: 12, padding: "10px 6px", cursor: "pointer", textAlign: "center", transition: "all 0.2s",
-              }}>
-              <div style={{ fontSize: 18, marginBottom: 3 }}>
+              }}
+              className="rounded-xl p-2 sm:p-2.5 cursor-pointer text-center transition-all">
+              <div className="text-base sm:text-lg mb-0.5">
                 {v.id === "Puck" ? "⚡" : v.id === "Charon" ? "🎙️" : v.id === "Kore" ? "🌟" : v.id === "Fenrir" ? "🔥" : "🌙"}
               </div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: globalVoice === v.id ? v.color : "var(--text-primary)", marginBottom: 2 }}>{v.name}</div>
-              <div style={{ fontSize: 9, color: "var(--text-muted)", lineHeight: 1.2 }}>{v.description}</div>
+              <div style={{ color: globalVoice === v.id ? v.color : "var(--text-primary)" }} className="text-xs font-bold truncate mb-0.5">{v.name}</div>
+              <div className="text-[10px] text-[var(--text-muted)] leading-tight truncate">{v.description}</div>
             </button>
           ))}
         </div>
@@ -396,7 +396,7 @@ export default function AudioScript({ scenes, project, apiKeys = [] }: AudioScri
               {/* Accent bar */}
               <div style={{ height: 3, background: st.audioUrl ? "linear-gradient(90deg,#3b82f6,#8b5cf6)" : "var(--gradient-brand)" }} />
 
-              <div style={{ padding: "16px 20px" }}>
+              <div className="p-3 sm:p-5">
                 {/* Scene header */}
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
                   <div style={{ width: 34, height: 34, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, background: "var(--gradient-brand)", color: "#fff" }}>
