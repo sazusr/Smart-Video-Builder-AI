@@ -1,0 +1,20 @@
+{
+  "name": "smart-video-ai-functions",
+  "private": true,
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "deploy": "firebase deploy --only functions"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.0",
+    "firebase-functions": "^6.3.0",
+    "@google/genai": "^1.0.0",
+    "express": "^5.1.0",
+    "cors": "^2.8.5"
+  }
+}

@@ -1,64 +1,88 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { useAuth } from './hooks/useAuth';
-import Auth from './components/Auth';
-import Dashboard from './components/Dashboard';
-import History from './components/History';
-import TrendingIdeas from './components/TrendingIdeas';
-import AdminPanel from './components/AdminPanel';
-import Layout from './components/Layout';
-import LandingPage from './components/LandingPage';
-import { RippleContainer } from './components/RippleContainer';
-import { LanguageProvider } from './context/LanguageContext';
+import { useAuthStore } from './store/authStore';
+import ProtectedRoute from './components/ProtectedRoute';
+import InstallPromptModal from './components/InstallPromptModal';
+
+// Pages
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import PendingPage from './pages/PendingPage';
+import AdminPanel from './pages/AdminPanel';
+import PricingPage from './pages/PricingPage';
+
+// Dashboard
+import UnifiedDashboard from './pages/dashboard/UnifiedDashboard';
+
+// Story Video
+import { StoryVideoPage } from './pages/story-video/StoryVideoPage';
 
 export default function App() {
-  const { user, profile, loading } = useAuth();
+  const { initialize } = useAuthStore();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-bg-dark">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    const unsub = initialize();
+    return unsub;
+  }, []);
 
   return (
-    <LanguageProvider>
-      <Router>
-        <RippleContainer>
-          <div className="min-h-screen bg-bg-dark text-slate-100">
-            <Toaster position="top-right" />
-            <Routes>
-              <Route path="/" element={user ? <Navigate to="/dashboard" /> : <LandingPage />} />
-              <Route path="/auth" element={user ? <Navigate to="/dashboard" /> : <Auth />} />
-              
-              <Route element={<Layout user={user} profile={profile} />}>
-                <Route 
-                  path="/dashboard" 
-                  element={user ? <Dashboard /> : <Navigate to="/auth" />} 
-                />
-                <Route 
-                  path="/history" 
-                  element={user ? <History /> : <Navigate to="/auth" />} 
-                />
-                <Route 
-                  path="/trending" 
-                  element={user ? <TrendingIdeas /> : <Navigate to="/auth" />} 
-                />
-                <Route 
-                  path="/admin" 
-                  element={
-                    profile?.role === 'admin' || user?.email === 'freelancersazu3@gmail.com' 
-                      ? <AdminPanel /> 
-                      : <Navigate to="/dashboard" />
-                  } 
-                />
-              </Route>
-            </Routes>
-          </div>
-        </RippleContainer>
-      </Router>
-    </LanguageProvider>
+    <BrowserRouter>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: 'var(--bg-card)',
+            color: 'var(--text-primary)',
+            border: '1px solid var(--border)',
+            borderRadius: '12px',
+            fontSize: '14px',
+          },
+          success: { iconTheme: { primary: '#22d3a0', secondary: '#fff' } },
+          error:   { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
+        }}
+      />
+      <InstallPromptModal />
+
+      <Routes>
+        {/* Public */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/pending" element={<PendingPage />} />
+
+        {/* Admin route redirect */}
+        <Route path="/admin" element={<Navigate to="/dashboard" replace />} />
+
+        {/* Dashboard */}
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <UnifiedDashboard />
+          </ProtectedRoute>
+        } />
+
+        {/* Story Video */}
+        <Route path="/story-video" element={
+          <ProtectedRoute>
+            <StoryVideoPage />
+          </ProtectedRoute>
+        } />
+
+        {/* Pricing */}
+        <Route path="/pricing" element={<PricingPage />} />
+
+        {/* Dashboard */}
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <UnifiedDashboard />
+          </ProtectedRoute>
+        } />
+
+        {/* Catch all */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
-

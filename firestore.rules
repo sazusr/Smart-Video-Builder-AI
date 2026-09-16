@@ -1,67 +1,114 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 0. Global Safety Net
+
+    // ─── Helper Functions ──────────────────────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && getUserData().role == 'admin';
+    }
+
+    function isActiveUser() {
+      return isAuthenticated() && getUserData().status == 'active';
+    }
+
+    // ─── Users Collection ─────────────────────────────────────────────────────
+    match /users/{uid} {
+      // User can read their own profile; admin can read all
+      allow read: if isOwner(uid) || isAdmin();
+
+      // User can create their own profile on signup
+      allow create: if isOwner(uid) && isAuthenticated();
+
+      // User can update only safe fields (including their own API keys); admin can update everything
+      allow update: if (isOwner(uid) && isAuthenticated() &&
+                       !request.resource.data.diff(resource.data).affectedKeys()
+                         .hasAny(['role', 'status', 'credits', 'plan', 'approvedAt', 'approvedBy']))
+                    || isAdmin();
+
+      // Only admin can delete user profiles
+      allow delete: if isAdmin();
+    }
+
+    // ─── Generations Collection ───────────────────────────────────────────────
+    match /generations/{genId} {
+      // Active user can read their own generations; admin can read all
+      allow read: if (isActiveUser() && resource.data.userId == request.auth.uid)
+                  || isAdmin();
+
+      // Active user can create generations for themselves
+      allow create: if isActiveUser()
+                    && request.resource.data.userId == request.auth.uid;
+
+      // Active user can update (favorite toggle) or delete their own generations
+      allow update: if (isActiveUser() && resource.data.userId == request.auth.uid)
+                    || isAdmin();
+
+      allow delete: if (isActiveUser() && resource.data.userId == request.auth.uid)
+                    || isAdmin();
+    }
+
+    // ─── Credits / Transactions ────────────────────────────────────────────────
+    match /transactions/{txId} {
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid)
+                  || isAdmin();
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // ─── App Settings ────────────────────────────────────────────────────────
+    match /settings/public {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    match /settings/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // ─── Admin-only collections ────────────────────────────────────────────────
+    match /analytics/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /logs/{docId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ─── Story Video Projects ─────────────────────────────────────────────────
+    match /story_projects/{projectId} {
+      // Active user can read their own projects; admin can read all
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid)
+                  || isAdmin();
+
+      // Active user can create/update their own projects
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid;
+
+      allow update: if (isAuthenticated() && resource.data.userId == request.auth.uid)
+                    || isAdmin();
+
+      allow delete: if (isAuthenticated() && resource.data.userId == request.auth.uid)
+                    || isAdmin();
+    }
+
+    // ─── Deny everything else ─────────────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
-    }
-
-    // Phase 3: Primitive Definition
-    function isSignedIn() { return request.auth != null; }
-    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
-    function isAdmin() { 
-      return isSignedIn() && (
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
-        request.auth.token.email == "freelancersazu3@gmail.com"
-      ); 
-    }
-    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
-    function incoming() { return request.resource.data; }
-    function existing() { return resource.data; }
-
-    // Users Collection
-    match /users/{userId} {
-      function isValidUser(data) {
-        return data.keys().hasAll(['uid', 'email', 'role', 'status', 'createdAt', 'updatedAt']) &&
-               data.uid == request.auth.uid &&
-               data.email is string && data.email.size() <= 200 &&
-               data.role in ['admin', 'user'] &&
-               data.status in ['pending', 'active', 'blocked'] &&
-               data.createdAt == request.time &&
-               data.updatedAt == request.time;
-      }
-
-      allow get: if isOwner(userId) || isAdmin();
-      allow list: if isAdmin();
-      allow create: if isSignedIn() && isValidId(userId) && userId == request.auth.uid && isValidUser(incoming());
-      allow update: if (isOwner(userId) || isAdmin()) && 
-                    incoming().updatedAt == request.time &&
-                    (isAdmin() || (incoming().diff(existing()).affectedKeys().hasOnly(['updatedAt', 'geminiApiKey', 'geminiBackupApiKeys']))); 
-    }
-
-    // Content Collection
-    match /content/{contentId} {
-      function isValidContent(data) {
-        return data.keys().hasAll(['userId', 'videoTopic', 'status', 'createdAt']) &&
-               data.userId == request.auth.uid &&
-               data.videoTopic is string && data.videoTopic.size() <= 500 &&
-               data.status in ['pending', 'generated'] &&
-               data.createdAt == request.time;
-      }
-
-      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isSignedIn() && isValidId(contentId) && isValidContent(incoming());
-      allow update: if (resource.data.userId == request.auth.uid || isAdmin()) && 
-                    (isAdmin() || (incoming().diff(existing()).affectedKeys().hasOnly(['results', 'analytics', 'status', 'audioUrl', 'language'])));
-      allow delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
-    }
-
-    // Admins Collection
-    match /admins/{userId} {
-      allow read: if isSignedIn();
-      // Only existing admins can add new admins, OR handled by special function if needed.
-      // For now, let's say the code handles the first admin check.
-      allow write: if isAdmin();
     }
   }
 }

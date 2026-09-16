@@ -1,74 +1,366 @@
-@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap');
+﻿/* â”€â”€ 1. Google Fonts â€” Anek Bangla (must be FIRST) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@import url('https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100;200;300;400;500;600;700;800&display=swap');
+
+/* â”€â”€ 2. Tailwind CSS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @import "tailwindcss";
 
-@theme {
-  --font-sans: "Anek Bangla", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Anek Bangla", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  
-  --color-primary: #8b5cf6;
-  --color-primary-dark: #6d28d9;
-  --color-accent: #22d3ee;
-  --color-bg-dark: #0f172a;
-  --color-glass-bg: rgba(15, 23, 42, 0.5);
-  --color-glass-border: rgba(255, 255, 255, 0.05);
-}
-
-:root {
-  color-scheme: dark;
-}
-
-body {
-  @apply bg-[#0f172a] text-slate-200 font-sans antialiased;
-}
-
-.glass-panel {
-  @apply bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-2xl;
-}
-
-.glass-card {
-  @apply bg-white/5 border border-white/10 backdrop-blur-sm rounded-2xl;
-}
-
-.gradient-text {
-  @apply bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent;
-}
-
-.gradient-btn {
-  @apply bg-gradient-to-r from-purple-600 to-blue-600 hover:opacity-90 shadow-lg shadow-purple-500/20 transition-all duration-300;
-}
-
-.ripple {
-  position: fixed;
-  border-radius: 50%;
-  transform: scale(0);
-  animation: ripple-animation 800ms ease-out;
-  background-color: rgba(139, 92, 246, 0.3); /* primary color with opacity */
-  border: 1px solid rgba(34, 211, 238, 0.2); /* accent color border */
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
-  pointer-events: none;
-  z-index: 9999;
-}
-
-@keyframes ripple-animation {
-  to {
-    transform: scale(4);
-    opacity: 0;
+/* â”€â”€ 3. Force Anek Bangla on EVERYTHING via @layer base (beats Tailwind) â”€â”€ */
+@layer base {
+  html, body, * {
+    font-family: 'Anek Bangla', sans-serif !important;
+  }
+  input, button, textarea, select, a, span, p, h1, h2, h3, h4, h5, h6, div, label {
+    font-family: 'Anek Bangla', sans-serif !important;
   }
 }
 
-.sidebar-active {
-  @apply bg-white/5 border border-white/10 text-purple-400;
+/* â”€â”€ 4. Extra insurance â€” runs after @layer so it ALWAYS wins â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+:root, html, body {
+  font-family: 'Anek Bangla', sans-serif !important;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #0f0f1a;
+  --bg-card: #13131f;
+  --bg-panel: #111827;
+  --border: #1e1e35;
+  --border-light: #1f2937;
+  --border-glow: #6c47ff33;
+  --accent-primary: #6c47ff;
+  --accent-secondary: #ff47a3;
+  --accent-tertiary: #47c5ff;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0c0;
+  --text-muted: #60607a;
+  --success: #22d3a0;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --gradient-brand: linear-gradient(135deg, #6c47ff 0%, #ff47a3 100%);
+  --gradient-card: linear-gradient(145deg, #13131f 0%, #1a1a2e 100%);
+  --shadow-glow: 0 0 30px #6c47ff20;
+  --shadow-card: 0 4px 24px #00000060;
+  
+  --bg-overlay-5: rgba(255, 255, 255, 0.05);
+  --bg-overlay-10: rgba(255, 255, 255, 0.1);
+  --bg-overlay-15: rgba(255, 255, 255, 0.15);
+  --bg-overlay-20: rgba(255, 255, 255, 0.2);
 }
 
-::-webkit-scrollbar-track {
-  @apply bg-transparent;
+body.light-mode {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-panel: #ffffff;
+  --border: #e2e8f0;
+  --border-light: #cbd5e1;
+  --border-glow: #6c47ff20;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --gradient-card: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);
+  --shadow-glow: 0 0 20px #6c47ff10;
+  --shadow-card: 0 4px 24px #00000010;
+  
+  --bg-overlay-5: rgba(0, 0, 0, 0.03);
+  --bg-overlay-10: rgba(0, 0, 0, 0.06);
+  --bg-overlay-15: rgba(0, 0, 0, 0.1);
+  --bg-overlay-20: rgba(0, 0, 0, 0.15);
 }
 
-::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full;
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Anek Bangla', sans-serif !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Anek Bangla', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--accent-primary); border-radius: 99px; }
+
+/* Glass Card */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.glass-card-hover {
+  transition: all 0.3s ease;
+}
+.glass-card-hover:hover {
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+/* Brand Gradient Button */
+.btn-brand {
+  background: var(--gradient-brand);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 28px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.btn-brand::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #7c5fff 0%, #ff6ab5 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.btn-brand:hover::before { opacity: 1; }
+.btn-brand:hover { box-shadow: 0 8px 32px #6c47ff50; transform: translateY(-1px); }
+.btn-brand:active { transform: translateY(0); }
+
+/* Outline Button */
+.btn-outline {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 28px;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-outline:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  background: #6c47ff10;
+}
+
+/* Input */
+.input-field {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-size: 15px;
+  width: 100%;
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: 'Anek Bangla', sans-serif;
+}
+.input-field:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px #6c47ff20;
+}
+.input-field::placeholder { color: var(--text-muted); }
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge-success { background: #22d3a020; color: #22d3a0; border: 1px solid #22d3a030; }
+.badge-warning { background: #f59e0b20; color: #f59e0b; border: 1px solid #f59e0b30; }
+.badge-danger  { background: #ef444420; color: #ef4444; border: 1px solid #ef444430; }
+.badge-primary { background: #6c47ff20; color: #6c47ff; border: 1px solid #6c47ff30; }
+.badge-muted   { background: #60607a20; color: #a0a0c0; border: 1px solid #60607a30; }
+
+/* Glow text */
+.text-gradient {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Neon glow animation */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px #6c47ff30; }
+  50%       { box-shadow: 0 0 40px #6c47ff60, 0 0 80px #ff47a320; }
+}
+.pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+.float-anim { animation: float 4s ease-in-out infinite; }
+
+/* Spinner */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid #ffffff30;
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+/* Page fade in */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up { animation: fadeInUp 0.5s ease forwards; }
+
+/* Ambient background orbs */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+.orb-1 { width: 500px; height: 500px; background: #6c47ff15; top: -150px; right: -100px; }
+.orb-2 { width: 400px; height: 400px; background: #ff47a310; bottom: -100px; left: -100px; }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .dashboard-main {
+    margin-left: 0 !important;
+  }
+  .dashboard-sidebar {
+    transform: translateX(-100%);
+  }
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+  }
+  .mobile-topbar {
+    display: flex !important;
+  }
+  .mobile-close-btn {
+    display: block !important;
+  }
+  .orb-1 { width: 300px; height: 300px; }
+  .orb-2 { width: 250px; height: 250px; }
+}
+
+
+
+/* =========================================
+   LAYOUT â€” Same on all screen sizes (Mobile-first)
+   ========================================= */
+
+/* App Wrapper */
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+/* Top App Bar */
+.top-app-bar {
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Bottom Navigation */
+.nav-container {
+  position: fixed;
+  z-index: 200;
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border-light);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  padding: 16px 24px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+}
+
+.nav-inner {
+  display: flex;
+  width: 100%;
+  max-width: 480px;
+  background: var(--bg-panel);
+  border-radius: 99px;
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+
+.nav-item {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.nav-item.active {
+  background: var(--border-light);
+  color: #d8b4fe;
+}
+
+.nav-item:hover {
+  color: var(--text-primary);
+}
+
+/* Main Content Area */
+.main-content {
+  flex: 1;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 20px 100px 20px;
+}
+
+/* Glass Card for Auth Pages */
+.glass-card-responsive {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 40px 30px;
+  text-align: left;
+}
+
+/* Sidebar header always hidden (no sidebar) */
+.sidebar-header {
+  display: none !important;
 }

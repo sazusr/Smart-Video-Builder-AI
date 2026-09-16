@@ -1,13 +1,44 @@
 <!doctype html>
-<html lang="en">
+<html lang="bn">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Smart Video AI — বাংলাদেশের প্রথম AI Creator Growth Operating System. Viral SEO Titles, Thumbnail Strategy, SEO Tags এবং আরো অনেক কিছু।" />
+    <meta name="theme-color" content="#6c47ff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="SmartVideoAI" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>Smart Video AI — From Idea to Viral</title>
+    <!-- Anek Bangla Font — Bengali + Latin -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!--
+      ⚡ CRITICAL: Capture beforeinstallprompt BEFORE React mounts.
+      Chrome fires this event very early — React's useEffect misses it.
+      We store it globally so the modal can use it anytime.
+    -->
+    <script>
+      window.__pwaInstallPrompt = null;
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        window.__pwaInstallPrompt = e;
+        // Notify any React listener that might already be mounted
+        window.dispatchEvent(new CustomEvent('pwa-prompt-ready'));
+      });
+      window.addEventListener('appinstalled', function() {
+        window.__pwaInstallPrompt = null;
+        localStorage.setItem('svai_install_done', 'true');
+        window.dispatchEvent(new CustomEvent('pwa-installed'));
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

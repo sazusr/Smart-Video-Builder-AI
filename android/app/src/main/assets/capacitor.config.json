@@ -1,5 +1,6 @@
 {
-	"appId": "com.example.app",
+	"appId": "com.smartvideoai.app",
 	"appName": "Smart Video AI",
-	"webDir": "dist"
+	"webDir": "dist",
+	"bundledWebRuntime": false
 }
