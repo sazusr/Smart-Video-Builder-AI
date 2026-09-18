@@ -40,40 +40,31 @@ export default function BibleView({
     { id: 'audioPlan', label: 'অডিও প্ল্যান', icon: <Music size={18} /> }
   ];
 
-  const getCardStyle = (borderColor: string) => ({
-    background: 'var(--bg-panel)',
-    border: '1px solid var(--border-light)',
-    borderLeft: `4px solid ${borderColor}`,
-    borderRadius: '16px',
-    padding: '14px',
-    marginBottom: '14px',
-    position: 'relative' as const,
-  });
-
   return (
-    <div className="flex flex-col gap-4 sm:gap-6">
+    <div className="flex flex-col w-full max-w-5xl mx-auto gap-6">
       {/* Tabs */}
-      <div className="flex gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pb-1.5 border-b border-[var(--border)] -mx-1 px-1">
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-1.5 px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm whitespace-nowrap transition-all cursor-pointer ${
-              activeTab === tab.id
-                ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)] shadow-sm'
-                : 'bg-transparent text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-            }`}
-          >
-            {tab.icon}
-            <span>{tab.label}</span>
-          </button>
-        ))}
+      <div className="flex flex-wrap gap-2 pb-2 border-b border-slate-800">
+        {tabs.map(tab => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-sm transition-colors cursor-pointer ${
+                isActive
+                  ? 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/30 shadow-sm'
+                  : 'bg-[#0f172a] text-slate-400 border border-slate-800 hover:border-slate-700 hover:text-slate-200'
+              }`}
+            >
+              {tab.icon}
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Content */}
-
-      {/* Content */}
-      <div style={{ minHeight: '400px' }}>
+      <div className="min-h-[400px]">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -83,13 +74,13 @@ export default function BibleView({
             transition={{ duration: 0.2 }}
           >
             {activeTab === 'characters' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="flex flex-col gap-6">
                 {characterBible.map(char => (
-                  <div key={char.characterId} style={getCardStyle('#3b82f6')}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                  <div key={char.characterId} className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
                       <div>
-                        <h3 style={{ margin: '0 0 4px 0', fontSize: '1.25rem', color: 'var(--text-primary)' }}>{char.name}</h3>
-                        <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                        <h3 className="text-xl font-bold text-slate-200 mb-2">{char.name}</h3>
+                        <p className="text-sm font-medium text-yellow-500 bg-yellow-500/10 inline-flex px-3 py-1 rounded-full border border-yellow-500/20">
                           বয়স: {char.age} | লিঙ্গ: {char.gender} | উচ্চতা: {char.height} | বডি টাইপ: {char.bodyType}
                         </p>
                       </div>
@@ -111,24 +102,15 @@ export default function BibleView({
                           ].join('\n');
                           handleCopy(char.characterId, text);
                         }}
-                        style={{
-                          background: 'var(--bg-secondary)',
-                          border: 'none',
-                          padding: '8px',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          color: 'var(--text-secondary)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
+                        className="px-3 py-1.5 flex items-center gap-1.5 bg-[#131926] border border-slate-800 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:border-slate-600 transition-colors shrink-0"
                         title="কপি করুন"
                       >
-                        {copiedId === char.characterId ? <Check size={18} color="#10b981" /> : <Copy size={18} />}
+                        {copiedId === char.characterId ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                        {copiedId === char.characterId ? 'কপি হয়েছে' : 'কপি'}
                       </button>
                     </div>
                     
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                       {[
                         { label: 'মুখমণ্ডল', value: char.faceDescription },
                         { label: 'ত্বক', value: char.skinTone },
@@ -141,9 +123,9 @@ export default function BibleView({
                         { label: 'আবেগের ধরন', value: char.emotionStyle },
                         { label: 'কণ্ঠস্বর', value: char.voiceDescription }
                       ].map((item, idx) => (
-                        <div key={idx} style={{ background: 'var(--bg-secondary)', padding: '12px', borderRadius: '12px' }}>
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>{item.label}</div>
-                          <div style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{item.value}</div>
+                        <div key={idx} className="bg-[#131926] border border-slate-800/80 p-4 rounded-xl">
+                          <div className="text-xs font-semibold text-slate-500 mb-1">{item.label}</div>
+                          <div className="text-sm text-slate-300">{item.value}</div>
                         </div>
                       ))}
                     </div>
@@ -153,13 +135,13 @@ export default function BibleView({
             )}
 
             {activeTab === 'locations' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className="flex flex-col gap-6">
                 {locationBible.map(loc => (
-                  <div key={loc.locationId} style={getCardStyle('#10b981')}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                  <div key={loc.locationId} className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
                       <div>
-                        <h3 style={{ margin: '0 0 4px 0', fontSize: '1.25rem', color: 'var(--text-primary)' }}>{loc.locationName}</h3>
-                        <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                        <h3 className="text-xl font-bold text-slate-200 mb-2">{loc.locationName}</h3>
+                        <p className="text-sm font-medium text-emerald-400 bg-emerald-400/10 inline-flex px-3 py-1 rounded-full border border-emerald-400/20">
                           ধরন: {loc.locationType} | পরিবেশ: {loc.environment}
                         </p>
                       </div>
@@ -177,24 +159,15 @@ export default function BibleView({
                           ].join('\n');
                           handleCopy(loc.locationId, text);
                         }}
-                        style={{
-                          background: 'var(--bg-secondary)',
-                          border: 'none',
-                          padding: '8px',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          color: 'var(--text-secondary)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
+                        className="px-3 py-1.5 flex items-center gap-1.5 bg-[#131926] border border-slate-800 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:border-slate-600 transition-colors shrink-0"
                         title="কপি করুন"
                       >
-                        {copiedId === loc.locationId ? <Check size={18} color="#10b981" /> : <Copy size={18} />}
+                        {copiedId === loc.locationId ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                        {copiedId === loc.locationId ? 'কপি হয়েছে' : 'কপি'}
                       </button>
                     </div>
                     
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                       {[
                         { label: 'আর্কিটেকচার', value: loc.architecture },
                         { label: 'গুরুত্বপূর্ণ বস্তু', value: loc.importantObjects.join(', ') },
@@ -203,9 +176,9 @@ export default function BibleView({
                         { label: 'আলো', value: loc.lighting },
                         { label: 'ভিস্যুয়াল বর্ণনা', value: loc.visualDescription }
                       ].map((item, idx) => (
-                        <div key={idx} style={{ background: 'var(--bg-secondary)', padding: '12px', borderRadius: '12px' }}>
-                          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>{item.label}</div>
-                          <div style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{item.value}</div>
+                        <div key={idx} className="bg-[#131926] border border-slate-800/80 p-4 rounded-xl">
+                          <div className="text-xs font-semibold text-slate-500 mb-1">{item.label}</div>
+                          <div className="text-sm text-slate-300">{item.value}</div>
                         </div>
                       ))}
                     </div>
@@ -215,9 +188,11 @@ export default function BibleView({
             )}
 
             {activeTab === 'visualStyle' && visualStyleBible && (
-              <div style={getCardStyle('#8b5cf6')}>
-                <h3 style={{ margin: '0 0 16px 0', fontSize: '1.25rem', color: 'var(--text-primary)' }}>ভিস্যুয়াল স্টাইল</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-sm">
+                <h3 className="text-xl font-bold text-slate-200 mb-6 flex items-center gap-2">
+                  <Palette className="text-yellow-500" size={24} /> ভিস্যুয়াল স্টাইল
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {[
                     { label: 'স্টাইল', value: visualStyleBible.visualStyle },
                     { label: 'সিনেমাটোগ্রাফি', value: visualStyleBible.cinematography },
@@ -230,9 +205,9 @@ export default function BibleView({
                     { label: 'ফিল্ম লুক', value: visualStyleBible.filmLook },
                     { label: 'অ্যাসপেক্ট রেশিও', value: visualStyleBible.aspectRatio }
                   ].map((item, idx) => (
-                    <div key={idx} style={{ background: 'var(--bg-secondary)', padding: '12px', borderRadius: '12px' }}>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>{item.label}</div>
-                      <div style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{item.value}</div>
+                    <div key={idx} className="bg-[#131926] border border-slate-800/80 p-4 rounded-xl">
+                      <div className="text-xs font-semibold text-slate-500 mb-1">{item.label}</div>
+                      <div className="text-sm text-slate-300">{item.value}</div>
                     </div>
                   ))}
                 </div>
@@ -240,12 +215,14 @@ export default function BibleView({
             )}
 
             {activeTab === 'audioPlan' && audioPlan && (
-              <div style={getCardStyle('#f59e0b')}>
-                <h3 style={{ margin: '0 0 16px 0', fontSize: '1.25rem', color: 'var(--text-primary)' }}>অডিও প্ল্যান</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '16px' }}>
-                  <div style={{ background: 'var(--bg-secondary)', padding: '12px', borderRadius: '12px', gridColumn: '1 / -1' }}>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>সামগ্রিক কৌশল</div>
-                    <div style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{audioPlan.overallStrategy}</div>
+              <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-sm">
+                <h3 className="text-xl font-bold text-slate-200 mb-6 flex items-center gap-2">
+                  <Music className="text-yellow-500" size={24} /> অডিও প্ল্যান
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                  <div className="bg-[#131926] border border-slate-800/80 p-5 rounded-xl col-span-1 sm:col-span-2">
+                    <div className="text-xs font-semibold text-slate-500 mb-2">সামগ্রিক কৌশল</div>
+                    <div className="text-sm text-slate-300 leading-relaxed">{audioPlan.overallStrategy}</div>
                   </div>
                   {[
                     { label: 'ন্যারেটরের কণ্ঠ', value: audioPlan.narratorVoice },
@@ -253,9 +230,9 @@ export default function BibleView({
                     { label: 'মিউজিক জেনার', value: audioPlan.musicGenre },
                     { label: 'মিউজিক মুড', value: audioPlan.musicMood }
                   ].map((item, idx) => (
-                    <div key={idx} style={{ background: 'var(--bg-secondary)', padding: '12px', borderRadius: '12px' }}>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>{item.label}</div>
-                      <div style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{item.value}</div>
+                    <div key={idx} className="bg-[#131926] border border-slate-800/80 p-4 rounded-xl">
+                      <div className="text-xs font-semibold text-slate-500 mb-1">{item.label}</div>
+                      <div className="text-sm text-slate-300">{item.value}</div>
                     </div>
                   ))}
                 </div>
@@ -266,30 +243,34 @@ export default function BibleView({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-end pt-3 border-t border-[var(--border)]">
-        <button
+      <div className="flex flex-col sm:flex-row gap-4 mb-16 pt-4 border-t border-slate-800">
+        <motion.button
+          whileHover={{ scale: loading ? 1 : 1.01 }}
+          whileTap={{ scale: loading ? 1 : 0.98 }}
           onClick={onRegenerateBibles}
           disabled={loading}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 sm:px-6 sm:py-3 rounded-xl border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--text-primary)] text-xs sm:text-sm font-semibold cursor-pointer disabled:opacity-50"
+          className="flex-1 py-4 px-6 rounded-2xl border border-slate-700 bg-[#1e293b] text-slate-200 text-base font-bold flex items-center justify-center gap-2.5 transition-colors hover:bg-slate-800 disabled:opacity-50 cursor-pointer shadow-sm"
         >
           <motion.div
             animate={loading ? { rotate: 360 } : { rotate: 0 }}
             transition={loading ? { repeat: Infinity, duration: 1, ease: 'linear' } : {}}
             className="flex"
           >
-            <RefreshCw size={14} />
+            <RefreshCw size={18} />
           </motion.div>
           <span>{loading ? 'তৈরি হচ্ছে...' : 'আবার তৈরি করুন'}</span>
-        </button>
+        </motion.button>
         
-        <button
+        <motion.button
+          whileHover={{ scale: loading ? 1 : 1.01 }}
+          whileTap={{ scale: loading ? 1 : 0.98 }}
           onClick={onApprove}
           disabled={loading}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-xl bg-[var(--gradient-brand)] text-white text-xs sm:text-sm font-semibold cursor-pointer shadow-md disabled:opacity-50"
+          className="flex-[2] py-4 px-6 rounded-2xl bg-yellow-500 hover:bg-yellow-400 text-[#090d16] text-base font-bold flex items-center justify-center gap-2.5 transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
         >
-          <CheckCheck size={16} />
+          <CheckCheck size={20} />
           <span>অনুমোদন করুন → সিন তৈরি</span>
-        </button>
+        </motion.button>
       </div>
     </div>
   );

@@ -309,34 +309,43 @@ export const StoryVideoPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]" style={{ fontFamily: "'Anek Bangla', sans-serif" }}>
+    <div className="app-layout w-full min-h-screen bg-[#090d16] text-[#f1f5f9] overflow-x-hidden" style={{ fontFamily: "'Anek Bangla', sans-serif" }}>
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-[var(--bg-card)]/95 backdrop-blur-md border-b border-[var(--border)] px-3 py-2 sm:px-6 sm:py-3.5 flex items-center gap-2.5 sm:gap-4 transition-all">
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="p-1.5 sm:p-2 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
-          title="ড্যাশবোর্ডে ফিরুন"
-        >
-          <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
-        </button>
-        <div className="flex-1 min-w-0">
-          <h1 className="text-base sm:text-lg md:text-xl font-bold truncate flex items-center gap-1.5">
-            <span>🎬</span> <span className="truncate">AI Story Video Generator</span>
-          </h1>
-          {store.project?.title && (
-            <p className="text-xs sm:text-sm text-[var(--text-secondary)] truncate m-0">
-              {store.project.title}
-            </p>
-          )}
+      <header className="sticky top-0 z-40 w-full bg-[#0b0f19]/95 backdrop-blur-md border-b border-slate-800 transition-all">
+        <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="p-2 rounded-xl bg-[#131926] border border-slate-700/70 text-slate-300 hover:text-white hover:border-yellow-500/50 transition-all cursor-pointer"
+              title="ড্যাশবোর্ডে ফিরুন"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div className="min-w-0">
+              <h1 className="text-base sm:text-lg font-bold truncate flex items-center gap-2 text-white">
+                <span>🎬</span> <span className="truncate">AI Story Video Generator</span>
+              </h1>
+              {store.project?.title && (
+                <p className="text-xs text-slate-400 truncate m-0">
+                  {store.project.title}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-500 shrink-0">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>AI স্টুডিও সক্রিয়</span>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-3xl mx-auto px-2.5 py-3 sm:px-4 sm:py-6 pb-20 sm:pb-28">
+      <main className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 pb-12">
         <ProgressTracker currentStep={store.currentStep} onStepClick={handleStepClick} canNavigateTo={canNavigateTo} />
 
         {store.error && (
-          <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-3.5 py-2.5 rounded-xl text-xs sm:text-sm mb-4 text-center">
+          <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl text-xs sm:text-sm mb-5 text-center">
             {store.error}
           </div>
         )}
@@ -346,7 +355,7 @@ export const StoryVideoPage: React.FC = () => {
             <motion.div
               key={store.currentStep}
               initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}
-              className="bg-transparent rounded-2xl overflow-hidden"
+              className="bg-transparent rounded-2xl"
             >
               {store.currentStep === 'input' && (
                 <StoryInputForm onSubmit={handleGenerateStory} loading={store.loading} initialInput={store.project?.input} apiKey={apiKey} />
@@ -394,35 +403,6 @@ export const StoryVideoPage: React.FC = () => {
           </AnimatePresence>
         </div>
       </main>
-
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[var(--bg-card)]/95 backdrop-blur-md border-t border-[var(--border)] px-3 py-2 sm:px-6 sm:py-3 z-40 flex justify-center shadow-lg">
-        <div className="max-w-3xl w-full flex justify-between items-center gap-2">
-          <button
-            onClick={handlePrev}
-            disabled={!prevStep}
-            className={`flex items-center gap-1 sm:gap-2 px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl border border-[var(--border)] text-xs sm:text-sm font-medium transition-all ${
-              prevStep
-                ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:bg-[var(--border)] cursor-pointer opacity-100'
-                : 'bg-[var(--bg-secondary)]/50 text-[var(--text-muted)] cursor-not-allowed opacity-40'
-            }`}
-          >
-            <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> <span>পূর্ববর্তী</span>
-          </button>
-          
-          <button
-            onClick={handleNext}
-            disabled={!nextStep || !canNavigateTo(nextStep)}
-            className={`flex items-center gap-1 sm:gap-2 px-4 py-2 sm:px-6 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-sm ${
-              !nextStep || !canNavigateTo(nextStep)
-                ? 'bg-[var(--bg-secondary)] text-[var(--text-muted)] cursor-not-allowed opacity-40'
-                : 'bg-[var(--gradient-brand)] text-white hover:opacity-90 cursor-pointer shadow-indigo-500/20'
-            }`}
-          >
-            <span>পরবর্তী ধাপ</span> <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-          </button>
-        </div>
-      </div>
 
       {/* Loading Overlay */}
       <AnimatePresence>

@@ -1,8 +1,7 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import type { WizardStep } from '../../../types/storyVideo';
 import { WIZARD_STEPS } from '../../../types/storyVideo';
-import { Check } from 'lucide-react';
+import { Check, ChevronRight } from 'lucide-react';
 
 interface ProgressTrackerProps {
   currentStep: WizardStep;
@@ -16,178 +15,96 @@ export const ProgressTracker: React.FC<ProgressTrackerProps> = ({
   canNavigateTo,
 }) => {
   const currentIndex = WIZARD_STEPS.findIndex((s) => s.key === currentStep);
-  const currentStepObj = WIZARD_STEPS[currentIndex] || WIZARD_STEPS[0];
   const percentComplete = Math.round(((currentIndex + 1) / WIZARD_STEPS.length) * 100);
 
   return (
-    <div
-      style={{
-        width: '100%',
-        padding: '12px 14px',
-        border: '1px solid var(--border-light)',
-        background: 'var(--bg-panel)',
-        borderRadius: '16px',
-        marginBottom: '14px',
-      }}
-    >
-      {/* ── Mobile Compact View (< 640px) ──────────────────────────────── */}
-      <div className="block sm:hidden">
-        {/* Top Info Bar */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ fontSize: 16 }}>{currentStepObj.icon}</span>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
-              ধাপ {currentIndex + 1}/৫: {currentStepObj.label}
-            </span>
-          </div>
-          <span style={{
-            fontSize: 10,
-            fontWeight: 800,
-            padding: '2px 7px',
-            borderRadius: 99,
-            background: 'rgba(108, 71, 255, 0.15)',
-            color: '#a78bfa',
-            border: '1px solid rgba(108, 71, 255, 0.3)',
-          }}>
-            {percentComplete}% সম্পন্ন
-          </span>
-        </div>
+    <div className="w-full bg-[#0f172a] border border-slate-800 rounded-2xl p-3.5 sm:p-5 mb-7 shadow-sm">
+      {/* ── Desktop Stepper (md+) ── */}
+      <div className="hidden md:flex items-center justify-between gap-2">
+        {WIZARD_STEPS.map((step, index) => {
+          const isCompleted = index < currentIndex;
+          const isCurrent = index === currentIndex;
+          const isClickable = canNavigateTo(step.key);
 
-        {/* 5 Segmented Progress Bars (Instagram / Duolingo style) */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 5 }}>
-          {WIZARD_STEPS.map((step, index) => {
-            const isCompleted = index < currentIndex;
-            const isCurrent = index === currentIndex;
-            const isClickable = canNavigateTo(step.key);
-
-            return (
+          return (
+            <React.Fragment key={step.key}>
               <button
-                key={step.key}
                 type="button"
                 onClick={() => isClickable && onStepClick(step.key)}
                 disabled={!isClickable}
-                title={step.label}
-                style={{
-                  height: 6,
-                  borderRadius: 99,
-                  border: 'none',
-                  cursor: isClickable ? 'pointer' : 'default',
-                  background: isCompleted
-                    ? '#22d3a0'
-                    : isCurrent
-                    ? 'linear-gradient(90deg, #6c47ff, #a78bfa)'
-                    : 'var(--border-light)',
-                  boxShadow: isCurrent ? '0 0 8px rgba(108, 71, 255, 0.6)' : 'none',
-                  transition: 'all 0.3s ease',
-                  padding: 0,
-                }}
-              />
-            );
-          })}
-        </div>
+                className={`flex-1 flex items-center gap-3 px-3.5 py-2.5 rounded-xl border transition-all text-left ${
+                  isCurrent
+                    ? "bg-yellow-500/10 border-yellow-500"
+                    : isCompleted
+                    ? "bg-emerald-950/20 border-emerald-500/40 text-emerald-300"
+                    : "bg-[#1e293b] border-transparent text-slate-500 opacity-60"
+                } ${isClickable ? "cursor-pointer hover:border-yellow-500/50" : "cursor-default"}`}
+              >
+                {/* Step Number Circle: ONLY contains the number or checkmark — NO long text inside! */}
+                <div
+                  className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 transition-all ${
+                    isCurrent
+                      ? "bg-yellow-500 text-[#090d16] scale-105"
+                      : isCompleted
+                      ? "bg-emerald-500 text-black font-extrabold"
+                      : "bg-[#090d16] text-slate-400 border border-slate-700"
+                  }`}
+                >
+                  {isCompleted ? <Check size={14} strokeWidth={3} /> : index + 1}
+                </div>
+
+                {/* Step Label in its own dedicated block — completely separate from circle */}
+                <div className="min-w-0 flex-1">
+                  <div className={`text-xs font-bold truncate ${
+                    isCurrent ? "text-yellow-500" : isCompleted ? "text-emerald-300" : "text-slate-400"
+                  }`}>
+                    {step.label}
+                  </div>
+                  <div className="text-[10px] text-slate-500 truncate mt-0.5">
+                    {isCompleted ? "সম্পন্ন" : isCurrent ? "চলমান ধাপ" : "পরবর্তী"}
+                  </div>
+                </div>
+              </button>
+
+              {/* Connector Chevron between steps */}
+              {index < WIZARD_STEPS.length - 1 && (
+                <div className="text-slate-600 px-0.5 shrink-0">
+                  <ChevronRight size={14} />
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
       </div>
 
-      {/* ── Desktop Full Stepper (>= 640px) ────────────────────────────── */}
-      <div className="hidden sm:block">
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            position: 'relative',
-            justifyContent: 'space-between',
-            padding: '8px 8px 4px',
-          }}
-        >
+      {/* ── Mobile Stepper (< md) ── */}
+      <div className="block md:hidden">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <span className="w-5 h-5 rounded-full bg-yellow-500 text-[#090d16] text-[11px] font-black flex items-center justify-center">
+              {currentIndex + 1}
+            </span>
+            <span className="text-xs font-bold text-white">
+              {WIZARD_STEPS[currentIndex]?.label || "গল্পের ধারণা"}
+            </span>
+          </div>
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/30">
+            ধাপ {currentIndex + 1}/৫ ({percentComplete}%)
+          </span>
+        </div>
+
+        {/* 5-segment progress bar */}
+        <div className="grid grid-cols-5 gap-1.5">
           {WIZARD_STEPS.map((step, index) => {
             const isCompleted = index < currentIndex;
             const isCurrent = index === currentIndex;
-            const isClickable = canNavigateTo(step.key);
-
             return (
-              <React.Fragment key={step.key}>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    cursor: isClickable ? 'pointer' : 'default',
-                    opacity: isClickable || isCurrent ? 1 : 0.45,
-                    position: 'relative',
-                    zIndex: 2,
-                    gap: 6,
-                    minWidth: 70,
-                  }}
-                  onClick={() => isClickable && onStepClick(step.key)}
-                >
-                  <motion.div
-                    initial={false}
-                    animate={{
-                      scale: isCurrent ? 1.08 : 1,
-                      backgroundColor: isCompleted
-                        ? '#22d3a0'
-                        : isCurrent
-                        ? 'var(--accent-primary)'
-                        : 'var(--bg-secondary)',
-                      borderColor: isCurrent || isCompleted ? 'transparent' : 'var(--border)',
-                    }}
-                    transition={{ duration: 0.25 }}
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      border: '2px solid',
-                      color: '#fff',
-                      boxShadow: isCurrent ? '0 0 14px rgba(108, 71, 255, 0.4)' : 'none',
-                      background: isCurrent ? 'var(--gradient-brand)' : undefined,
-                    }}
-                  >
-                    {isCompleted ? (
-                      <Check size={16} color="#000" strokeWidth={3} />
-                    ) : (
-                      <span style={{ fontSize: 15 }}>{step.icon}</span>
-                    )}
-                  </motion.div>
-                  <div
-                    style={{
-                      fontSize: 11,
-                      fontWeight: isCurrent ? 700 : 500,
-                      color: isCurrent ? 'var(--text-primary)' : 'var(--text-secondary)',
-                      textAlign: 'center',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {step.label}
-                  </div>
-                </div>
-
-                {index < WIZARD_STEPS.length - 1 && (
-                  <div
-                    style={{
-                      flex: 1,
-                      height: 2,
-                      backgroundColor: 'var(--border)',
-                      position: 'relative',
-                      marginTop: -20,
-                      zIndex: 1,
-                    }}
-                  >
-                    <motion.div
-                      initial={false}
-                      animate={{
-                        width: isCompleted ? '100%' : '0%',
-                      }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
-                      style={{
-                        height: '100%',
-                        backgroundColor: '#22d3a0',
-                      }}
-                    />
-                  </div>
-                )}
-              </React.Fragment>
+              <div
+                key={step.key}
+                className={`h-1.5 rounded-full transition-all ${
+                  isCompleted ? "bg-emerald-400" : isCurrent ? "bg-yellow-500" : "bg-[#1e293b]"
+                }`}
+              />
             );
           })}
         </div>

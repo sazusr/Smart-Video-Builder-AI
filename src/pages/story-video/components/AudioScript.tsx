@@ -235,94 +235,92 @@ export default function AudioScript({ scenes, project, apiKeys = [] }: AudioScri
 
   // ── Render ──────────────────────────────────────────────────────────────
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+    <div className="w-full flex flex-col max-w-5xl mx-auto gap-6">
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-sm">
         <div>
-          <h2 className="text-lg sm:text-xl md:text-2xl font-black text-[var(--text-primary)] m-0 mb-2 flex items-center gap-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-200 m-0 mb-3 flex items-center gap-2">
             <span>🎤</span> <span>AI অডিও স্ক্রিপ্ট</span>
           </h2>
-          <div className="flex flex-wrap gap-1.5 sm:gap-2">
+          <div className="flex flex-wrap gap-2">
             {[
               { icon: "🎬", label: `${scenes.length} সিন` },
               { icon: "⏱️", label: `${totalDuration} সেকেন্ড` },
               { icon: "🎙️", label: "Gemini TTS" },
             ].map((b, i) => (
-              <span key={i} className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-secondary)]">
+              <span key={i} className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#131926] border border-slate-800 text-slate-400">
                 <span>{b.icon}</span> <span>{b.label}</span>
               </span>
             ))}
           </div>
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-3 flex-wrap">
           <button onClick={handleCopyAll}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-semibold cursor-pointer border border-[var(--border-light)] bg-[var(--bg-secondary)] text-[var(--text-primary)] text-xs sm:text-sm">
-            {copiedAll ? <CheckCheck size={14} color="#4ade80" /> : <Copy size={14} />}
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold cursor-pointer border border-slate-700 bg-[#1e293b] text-slate-200 text-sm hover:bg-slate-800 transition-colors">
+            {copiedAll ? <CheckCheck size={16} className="text-emerald-500" /> : <Copy size={16} />}
             <span>{copiedAll ? "কপি হয়েছে ✓" : "স্ক্রিপ্ট কপি"}</span>
           </button>
           <button onClick={handleDownload}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-semibold cursor-pointer border-none bg-[var(--gradient-brand)] text-white text-xs sm:text-sm">
-            <Download size={14} /> <span>ডাউনলোড</span>
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold cursor-pointer border-none bg-yellow-500 hover:bg-yellow-400 text-[#090d16] text-sm transition-colors shadow-sm">
+            <Download size={16} /> <span>ডাউনলোড</span>
           </button>
         </div>
       </div>
 
       {/* Global TTS Config — "Generate All" */}
-      <div className="bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-blue-500/10 border border-indigo-500/25 rounded-2xl p-3 sm:p-5">
-        <div className="flex items-center gap-2.5 mb-3 sm:mb-4">
-          <div className="bg-indigo-500/20 text-indigo-400 p-2 rounded-lg shrink-0">
-            <Music size={16} />
+      <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-sm">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="bg-yellow-500/10 text-yellow-500 p-2.5 rounded-xl shrink-0 border border-yellow-500/20">
+            <Music size={18} />
           </div>
           <div>
-            <div className="text-sm sm:text-base font-bold text-[var(--text-primary)] leading-snug">AI ভয়েসওভার — সব সিন একসাথে</div>
-            <div className="text-xs text-[var(--text-muted)]">ভয়েস ও স্টাইল বেছে নিন, তারপর সব সিনের অডিও তৈরি করুন</div>
+            <div className="text-base font-bold text-slate-200 leading-snug">AI ভয়েসওভার — সব সিন একসাথে</div>
+            <div className="text-sm text-slate-400">ভয়েস ও স্টাইল বেছে নিন, তারপর সব সিনের অডিও তৈরি করুন</div>
           </div>
         </div>
 
         {/* Voice grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 sm:gap-2 mb-3">
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-5">
           {VOICE_OPTIONS.map(v => (
             <button key={v.id} type="button" onClick={() => setGlobalVoice(v.id)}
-              style={{
-                background: globalVoice === v.id ? `${v.color}20` : "var(--bg-secondary)",
-                border: `2px solid ${globalVoice === v.id ? v.color : "transparent"}`,
-              }}
-              className="rounded-xl p-2 sm:p-2.5 cursor-pointer text-center transition-all">
-              <div className="text-base sm:text-lg mb-0.5">
+              className={`rounded-xl p-3 cursor-pointer text-center transition-all ${
+                globalVoice === v.id 
+                  ? 'bg-yellow-500/10 border border-yellow-500/50 shadow-sm' 
+                  : 'bg-[#131926] border border-slate-800 hover:border-slate-700'
+              }`}>
+              <div className="text-xl sm:text-2xl mb-1">
                 {v.id === "Puck" ? "⚡" : v.id === "Charon" ? "🎙️" : v.id === "Kore" ? "🌟" : v.id === "Fenrir" ? "🔥" : "🌙"}
               </div>
-              <div style={{ color: globalVoice === v.id ? v.color : "var(--text-primary)" }} className="text-xs font-bold truncate mb-0.5">{v.name}</div>
-              <div className="text-[10px] text-[var(--text-muted)] leading-tight truncate">{v.description}</div>
+              <div className={`text-xs font-bold truncate mb-1 ${globalVoice === v.id ? 'text-yellow-500' : 'text-slate-300'}`}>{v.name}</div>
+              <div className="text-[10px] text-slate-500 leading-tight truncate">{v.description}</div>
             </button>
           ))}
         </div>
 
         {/* Speed + Mood */}
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 14 }}>
-          <div style={{ flex: 1, minWidth: 120 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", marginBottom: 6 }}>স্পিড</div>
-            <div style={{ display: "flex", gap: 6 }}>
+        <div className="flex flex-wrap gap-4 mb-6">
+          <div className="flex-1 min-w-[140px]">
+            <div className="text-xs font-bold text-slate-500 mb-2">স্পিড</div>
+            <div className="flex gap-2">
               {(["slow", "normal", "fast"] as SpeechSpeed[]).map(s => (
-                <button key={s} type="button" onClick={() => setGlobalSpeed(s)} style={{
-                  flex: 1, padding: "7px 4px", borderRadius: 8, border: `1.5px solid ${globalSpeed === s ? "#3b82f6" : "var(--border)"}`,
-                  background: globalSpeed === s ? "#3b82f620" : "transparent", color: globalSpeed === s ? "#60a5fa" : "var(--text-muted)",
-                  fontSize: 11, fontWeight: 600, cursor: "pointer",
-                }}>
+                <button key={s} type="button" onClick={() => setGlobalSpeed(s)} className={`
+                  flex-1 py-2 px-1 rounded-lg border text-xs font-semibold cursor-pointer transition-colors
+                  ${globalSpeed === s ? "bg-yellow-500/10 border-yellow-500/50 text-yellow-500" : "bg-[#131926] border-slate-800 text-slate-400 hover:border-slate-700"}
+                `}>
                   {s === "slow" ? "🐢 ধীর" : s === "normal" ? "🎯 স্বাভাবিক" : "⚡ দ্রুত"}
                 </button>
               ))}
             </div>
           </div>
-          <div style={{ flex: 1, minWidth: 160 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", marginBottom: 6 }}>মুড</div>
-            <div style={{ display: "flex", gap: 6 }}>
+          <div className="flex-1 min-w-[180px]">
+            <div className="text-xs font-bold text-slate-500 mb-2">মুড</div>
+            <div className="flex gap-2">
               {(["normal", "excited", "calm", "dramatic"] as SpeechMood[]).map(m => (
-                <button key={m} type="button" onClick={() => setGlobalMood(m)} style={{
-                  flex: 1, padding: "7px 4px", borderRadius: 8, border: `1.5px solid ${globalMood === m ? "#8b5cf6" : "var(--border)"}`,
-                  background: globalMood === m ? "#8b5cf620" : "transparent", color: globalMood === m ? "#a78bfa" : "var(--text-muted)",
-                  fontSize: 10, fontWeight: 600, cursor: "pointer",
-                }}>
+                <button key={m} type="button" onClick={() => setGlobalMood(m)} className={`
+                  flex-1 py-2 px-1 rounded-lg border text-xs font-semibold cursor-pointer transition-colors
+                  ${globalMood === m ? "bg-yellow-500/10 border-yellow-500/50 text-yellow-500" : "bg-[#131926] border-slate-800 text-slate-400 hover:border-slate-700"}
+                `}>
                   {m === "normal" ? "😐" : m === "excited" ? "🤩" : m === "calm" ? "😌" : "🎭"}
                 </button>
               ))}
@@ -363,14 +361,12 @@ export default function AudioScript({ scenes, project, apiKeys = [] }: AudioScri
             }
             setGeneratingAll(false);
           }}
-          style={{
-            width: "100%", padding: "14px", borderRadius: 14, border: "none", cursor: generatingAll ? "wait" : "pointer",
-            background: generatingAll ? "#334155" : "linear-gradient(135deg, #6c47ff 0%, #3b82f6 100%)",
-            color: "#fff", fontSize: 15, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-          }}>
+          className={`w-full py-3.5 rounded-xl border-none font-bold text-sm flex items-center justify-center gap-2.5 transition-colors ${
+            generatingAll ? 'bg-slate-800 text-slate-400 cursor-wait' : 'bg-yellow-500 hover:bg-yellow-400 text-[#090d16] cursor-pointer'
+          }`}>
           {generatingAll ? (
             <><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-              style={{ width: 20, height: 20, border: "2.5px solid #555", borderTopColor: "#aaa", borderRadius: "50%" }} />
+              className="w-4 h-4 border-2 border-slate-600 border-t-slate-400 rounded-full" />
               সব সিনের অডিও তৈরি হচ্ছে...</>
           ) : (
             <><Wand2 size={18} /> সব সিনের ভয়েসওভার তৈরি করুন</>
@@ -379,8 +375,8 @@ export default function AudioScript({ scenes, project, apiKeys = [] }: AudioScri
       </div>
 
       {/* Per-Scene Cards */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: "var(--text-primary)" }}>
+      <div className="flex flex-col gap-5">
+        <h3 className="m-0 text-lg font-bold text-slate-200">
           📋 সিন-ভিত্তিক অডিও স্ক্রিপ্ট
         </h3>
 
@@ -391,82 +387,92 @@ export default function AudioScript({ scenes, project, apiKeys = [] }: AudioScri
             <motion.div key={s.sceneId}
               initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: Math.min(s.index * 0.04, 0.3) }}
-              style={{ borderRadius: 16, overflow: "hidden", border: `1px solid ${st.audioUrl ? "#3b82f640" : "var(--border)"}`, background: "var(--bg-panel)" }}>
+              className={`rounded-2xl overflow-hidden bg-[#0f172a] shadow-sm transition-all duration-300 ${
+                st.audioUrl ? 'border border-emerald-500/30' : 'border border-slate-800'
+              }`}>
 
               {/* Accent bar */}
-              <div style={{ height: 3, background: st.audioUrl ? "linear-gradient(90deg,#3b82f6,#8b5cf6)" : "var(--gradient-brand)" }} />
+              <div className={`h-1 transition-colors duration-400 ${
+                st.audioUrl ? 'bg-emerald-500' : 'bg-slate-700'
+              }`} />
 
-              <div className="p-3 sm:p-5">
+              <div className="p-4 sm:p-6 pb-4">
                 {/* Scene header */}
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-                  <div style={{ width: 34, height: 34, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 14, background: "var(--gradient-brand)", color: "#fff" }}>
-                    {s.index + 1}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)" }}>সিন {s.index + 1}</span>
-                      <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 99, background: "var(--bg-secondary)", color: "var(--text-muted)", fontWeight: 600 }}>{s.duration}s</span>
-                      {st.audioUrl && <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 99, background: "#3b82f620", color: "#60a5fa", fontWeight: 600 }}>✅ অডিও রেডি</span>}
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-5">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <div className={`w-10 h-10 rounded-xl shrink-0 flex items-center justify-center font-bold text-sm transition-all ${
+                      st.audioUrl ? 'bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/30' : 'bg-[#131926] text-slate-300 border border-slate-800'
+                    }`}>
+                      {st.audioUrl ? '✓' : s.index + 1}
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-base font-bold text-slate-200">সিন {s.index + 1}</span>
+                        <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-[#131926] border border-slate-800 text-slate-400">{s.duration}s</span>
+                        {st.audioUrl && <span className="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">✅ অডিও রেডি</span>}
+                      </div>
                     </div>
                   </div>
-                  <button onClick={() => handleCopyScene(s.sceneId, s.scriptText)}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: copiedStates[s.sceneId] ? "#10b981" : "var(--text-muted)", display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600 }}>
-                    {copiedStates[s.sceneId] ? <CheckCheck size={14} /> : <Copy size={14} />} কপি
-                  </button>
-                  <button onClick={() => updateTts(s.sceneId, { expanded: !st.expanded })}
-                    style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}>
-                    {st.expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                  </button>
+                  
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button onClick={() => handleCopyScene(s.sceneId, s.scriptText)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-none cursor-pointer text-xs font-bold transition-colors ${
+                        copiedStates[s.sceneId] ? 'bg-emerald-500/10 text-emerald-500' : 'bg-[#131926] text-slate-400 hover:text-slate-200'
+                      }`}>
+                      {copiedStates[s.sceneId] ? <CheckCheck size={14} /> : <Copy size={14} />} কপি
+                    </button>
+                    <button onClick={() => updateTts(s.sceneId, { expanded: !st.expanded })}
+                      className="p-1.5 bg-[#131926] rounded-lg border-none cursor-pointer text-slate-400 hover:text-slate-200 transition-colors">
+                      {st.expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Script preview (always visible) */}
-                <div style={{ background: "rgba(108,71,255,0.06)", border: "1px solid rgba(108,71,255,0.15)", borderRadius: 12, padding: "12px 14px", marginBottom: 14 }}>
+                <div className="bg-[#090d16] border border-slate-800/80 rounded-xl p-4 mb-4">
                   {s.scriptText ? (
                     s.scriptText.split("\n").map((line, li) => (
-                      <p key={li} style={{ margin: li === 0 ? 0 : "6px 0 0", fontSize: 13, color: "var(--text-primary)", lineHeight: 1.6 }}>{line}</p>
+                      <p key={li} className={`text-sm text-slate-300 leading-relaxed ${li === 0 ? 'm-0' : 'mt-2 mb-0'}`}>{line}</p>
                     ))
                   ) : (
-                    <p style={{ margin: 0, fontSize: 13, color: "var(--text-muted)", fontStyle: "italic" }}>এই সিনে কোনো স্ক্রিপ্ট নেই</p>
+                    <p className="m-0 text-sm text-slate-500 italic">এই সিনে কোনো স্ক্রিপ্ট নেই</p>
                   )}
                 </div>
 
                 {/* TTS Controls (expanded) */}
                 <AnimatePresence>
                   {st.expanded && (
-                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} style={{ overflow: "hidden" }}>
-                      <div style={{ borderTop: "1px solid var(--border)", paddingTop: 14, marginBottom: 14 }}>
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                      <div className="border-t border-slate-800 pt-4 mb-4">
                         {/* Mini voice selector */}
-                        <div style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", marginBottom: 8 }}>ভয়েস বেছে নিন</div>
-                        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+                        <div className="text-xs font-bold text-slate-500 mb-2">ভয়েস বেছে নিন</div>
+                        <div className="flex gap-2 flex-wrap mb-4">
                           {VOICE_OPTIONS.map(v => (
                             <button key={v.id} type="button" onClick={() => updateTts(s.sceneId, { voice: v.id })}
-                              style={{
-                                padding: "6px 12px", borderRadius: 20, border: `1.5px solid ${st.voice === v.id ? v.color : "transparent"}`,
-                                background: st.voice === v.id ? `${v.color}18` : "var(--bg-secondary)",
-                                color: st.voice === v.id ? v.color : "var(--text-muted)", fontSize: 11, fontWeight: 700, cursor: "pointer",
-                              }}>
+                              className={`px-3 py-1.5 rounded-full border text-xs font-bold cursor-pointer transition-colors ${
+                                st.voice === v.id ? 'bg-yellow-500/10 border-yellow-500/50 text-yellow-500' : 'bg-[#131926] border-slate-800 text-slate-400'
+                              }`}>
                               {v.id === "Puck" ? "⚡" : v.id === "Charon" ? "🎙️" : v.id === "Kore" ? "🌟" : v.id === "Fenrir" ? "🔥" : "🌙"} {v.name}
                             </button>
                           ))}
                         </div>
 
                         {/* Speed + Mood mini */}
-                        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                        <div className="flex gap-3 flex-wrap">
                           {(["slow", "normal", "fast"] as SpeechSpeed[]).map(sp => (
-                            <button key={sp} type="button" onClick={() => updateTts(s.sceneId, { speed: sp })} style={{
-                              padding: "5px 10px", borderRadius: 8, border: `1px solid ${st.speed === sp ? "#3b82f6" : "var(--border)"}`,
-                              background: st.speed === sp ? "#3b82f618" : "transparent", color: st.speed === sp ? "#60a5fa" : "var(--text-muted)",
-                              fontSize: 10, fontWeight: 600, cursor: "pointer",
-                            }}>
+                            <button key={sp} type="button" onClick={() => updateTts(s.sceneId, { speed: sp })} className={`
+                              px-3 py-1.5 rounded-lg border text-xs font-semibold cursor-pointer transition-colors
+                              ${st.speed === sp ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-500" : "bg-transparent border-slate-800 text-slate-500"}
+                            `}>
                               {sp === "slow" ? "🐢 ধীর" : sp === "normal" ? "🎯 স্বাভাবিক" : "⚡ দ্রুত"}
                             </button>
                           ))}
+                          <div className="w-px bg-slate-800 mx-1" />
                           {(["normal", "excited", "calm", "dramatic"] as SpeechMood[]).map(md => (
-                            <button key={md} type="button" onClick={() => updateTts(s.sceneId, { mood: md })} style={{
-                              padding: "5px 10px", borderRadius: 8, border: `1px solid ${st.mood === md ? "#8b5cf6" : "var(--border)"}`,
-                              background: st.mood === md ? "#8b5cf618" : "transparent", color: st.mood === md ? "#a78bfa" : "var(--text-muted)",
-                              fontSize: 10, fontWeight: 600, cursor: "pointer",
-                            }}>
+                            <button key={md} type="button" onClick={() => updateTts(s.sceneId, { mood: md })} className={`
+                              px-3 py-1.5 rounded-lg border text-xs font-semibold cursor-pointer transition-colors
+                              ${st.mood === md ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-500" : "bg-transparent border-slate-800 text-slate-500"}
+                            `}>
                               {md === "normal" ? "😐" : md === "excited" ? "🤩" : md === "calm" ? "😌" : "🎭"}
                             </button>
                           ))}
@@ -478,17 +484,14 @@ export default function AudioScript({ scenes, project, apiKeys = [] }: AudioScri
 
                 {/* Generate button */}
                 <button onClick={() => handleGenerate(s.sceneId)} disabled={st.loading || !s.scriptText}
-                  style={{
-                    width: "100%", padding: "11px", borderRadius: 12, border: "none",
-                    cursor: st.loading ? "wait" : "pointer",
-                    background: st.loading ? "#334155" : st.audioUrl ? "#1e3a5f" : "linear-gradient(135deg,#6c47ff,#3b82f6)",
-                    color: "#fff", fontSize: 13, fontWeight: 700,
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 10,
-                    opacity: !s.scriptText ? 0.4 : 1,
-                  }}>
+                  className={`w-full py-3 rounded-xl border-none font-bold text-sm flex items-center justify-center gap-2 mb-3 transition-colors ${
+                    st.loading ? 'bg-slate-800 text-slate-400 cursor-wait' 
+                    : st.audioUrl ? 'bg-[#1e293b] text-slate-300 hover:text-white cursor-pointer' 
+                    : 'bg-[#1e293b] text-slate-200 border border-slate-700 hover:bg-slate-800 cursor-pointer'
+                  } ${!s.scriptText ? 'opacity-40 cursor-not-allowed' : ''}`}>
                   {st.loading ? (
                     <><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                      style={{ width: 16, height: 16, border: "2px solid #555", borderTopColor: "#aaa", borderRadius: "50%" }} />
+                      className="w-4 h-4 border-2 border-slate-600 border-t-slate-400 rounded-full" />
                       তৈরি হচ্ছে...</>
                   ) : st.audioUrl ? (
                     <><Sparkles size={14} /> পুনরায় তৈরি করুন</>
@@ -500,26 +503,26 @@ export default function AudioScript({ scenes, project, apiKeys = [] }: AudioScri
                 {/* Audio player */}
                 {st.audioUrl && (
                   <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-                    style={{ background: "#3b82f612", border: "1px solid #3b82f630", borderRadius: 12, padding: "12px 14px" }}>
+                    className="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-4">
                     <input type="range" min={0} max={st.duration || 1} step={0.1} value={st.progress}
                       onChange={e => handleSeek(s.sceneId, Number(e.target.value))}
-                      style={{ width: "100%", marginBottom: 6, accentColor: "#3b82f6", cursor: "pointer" }} />
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
-                      <span style={{ fontSize: 10, color: "var(--text-muted)" }}>{formatTime(st.progress)}</span>
-                      <span style={{ fontSize: 10, color: "var(--text-muted)" }}>{formatTime(st.duration)}</span>
+                      className="w-full mb-2 accent-emerald-500 cursor-pointer" />
+                    <div className="flex justify-between mb-3">
+                      <span className="text-[10px] text-emerald-500/70">{formatTime(st.progress)}</span>
+                      <span className="text-[10px] text-emerald-500/70">{formatTime(st.duration)}</span>
                     </div>
-                    <div style={{ display: "flex", gap: 8 }}>
+                    <div className="flex gap-2">
                       <button onClick={() => handlePlayPause(s.sceneId)}
-                        style={{ flex: 1, padding: "9px", borderRadius: 10, border: "none", cursor: "pointer", background: "#3b82f6", color: "#fff", fontWeight: 700, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                        className="flex-1 py-2.5 rounded-lg border-none cursor-pointer bg-emerald-500 hover:bg-emerald-400 text-[#090d16] font-bold text-sm flex items-center justify-center gap-2 transition-colors">
                         {st.isPlaying ? <><Pause size={14} /> পজ</> : <><Play size={14} /> প্লে</>}
                       </button>
                       <button onClick={() => handleStop(s.sceneId)}
-                        style={{ padding: "9px 12px", borderRadius: 10, border: "1px solid var(--border)", cursor: "pointer", background: "transparent", color: "var(--text-secondary)", display: "flex", alignItems: "center" }}>
-                        <Square size={13} />
+                        className="p-2.5 rounded-lg border border-emerald-500/20 cursor-pointer bg-transparent text-emerald-500 hover:bg-emerald-500/10 flex items-center transition-colors">
+                        <Square size={14} />
                       </button>
                       <button onClick={() => st.wavBuffer && downloadWav(st.wavBuffer, `scene-${s.index + 1}-${st.voice}.wav`)}
-                        style={{ padding: "9px 14px", borderRadius: 10, border: "1px solid #22d3a040", cursor: "pointer", background: "#22d3a015", color: "#22d3a0", display: "flex", alignItems: "center", gap: 5, fontSize: 12, fontWeight: 700 }}>
-                        <Download size={13} /> WAV
+                        className="px-4 py-2.5 rounded-lg border border-emerald-500/30 cursor-pointer bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 flex items-center gap-1.5 text-xs font-bold transition-colors">
+                        <Download size={14} /> WAV
                       </button>
                     </div>
                   </motion.div>

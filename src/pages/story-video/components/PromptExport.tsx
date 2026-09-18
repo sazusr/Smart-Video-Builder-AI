@@ -143,74 +143,73 @@ export default function PromptExport({ scenes, characterBible, aspectRatio, proj
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 sm:gap-6">
+    <div className="w-full flex flex-col max-w-5xl mx-auto gap-6">
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-sm">
         <div>
-          <h2 className="text-lg sm:text-xl md:text-2xl font-black flex items-center gap-2 m-0 mb-1.5 text-[var(--text-primary)]">
+          <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2 m-0 mb-3 text-slate-200">
             <span>📋</span> <span>Veo Video Prompts</span>
           </h2>
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-            <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-secondary)]">
-              <Film size={12} /> <span>{scenes.length} সিন</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#131926] border border-slate-800 text-slate-400">
+              <Film size={14} /> <span>{scenes.length} সিন</span>
             </span>
-            <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-secondary)]">
-              <Clock size={12} /> <span>{totalDuration} সেকেন্ড</span>
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#131926] border border-slate-800 text-slate-400">
+              <Clock size={14} /> <span>{totalDuration} সেকেন্ড</span>
             </span>
-            <span className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-[var(--bg-secondary)] text-[var(--text-secondary)]">
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#131926] border border-slate-800 text-slate-400">
               <span>{aspectRatio}</span>
             </span>
           </div>
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-3 flex-wrap">
           <button onClick={handleCopyAll}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-semibold cursor-pointer border border-[var(--border-light)] bg-[var(--bg-secondary)] text-[var(--text-primary)] text-xs sm:text-sm">
-            {copiedAll ? <CheckCheck size={14} color="#4ade80" /> : <Copy size={14} />}
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold cursor-pointer border border-slate-700 bg-[#1e293b] text-slate-200 text-sm hover:bg-slate-800 transition-colors">
+            {copiedAll ? <CheckCheck size={16} className="text-emerald-500" /> : <Copy size={16} />}
             <span>{copiedAll ? 'কপি হয়েছে' : 'সবগুলো কপি'}</span>
           </button>
           <button onClick={handleExportText}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl font-semibold cursor-pointer border-none bg-[var(--gradient-brand)] text-white text-xs sm:text-sm">
-            <Download size={14} /> <span>ডাউনলোড</span>
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold cursor-pointer border-none bg-yellow-500 hover:bg-yellow-400 text-[#090d16] text-sm transition-colors shadow-sm">
+            <Download size={16} /> <span>ডাউনলোড</span>
           </button>
         </div>
       </div>
 
       {/* Progress Tracker */}
-      <div className="bg-[var(--bg-panel)] border border-[var(--border-light)] rounded-2xl p-3 sm:p-4">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--text-primary)' }}>
+      <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 shadow-sm">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-bold text-slate-200">
               পেস্ট করা অগ্রগতি
             </span>
-            <span style={{
-              fontSize: '13px', fontWeight: 700,
-              padding: '3px 12px', borderRadius: '99px',
-              background: doneCount === scenes.length ? '#10b98120' : '#f59e0b20',
-              color: doneCount === scenes.length ? '#10b981' : '#f59e0b',
-            }}>
+            <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+              doneCount === scenes.length 
+                ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' 
+                : 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20'
+            }`}>
               {doneCount}/{scenes.length} সিন ✓
             </span>
           </div>
           {doneCount > 0 && (
             <button onClick={resetAll}
-              style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '12px', padding: '4px 8px', borderRadius: '8px' }}>
-              <RotateCcw size={12} /> রিসেট
+              className="flex items-center gap-1.5 bg-transparent border-none cursor-pointer text-slate-400 hover:text-slate-200 text-xs px-2 py-1 rounded-lg transition-colors">
+              <RotateCcw size={14} /> রিসেট
             </button>
           )}
         </div>
 
         {/* Progress bar */}
-        <div style={{ width: '100%', height: '8px', background: 'var(--bg-secondary)', borderRadius: '99px', overflow: 'hidden', marginBottom: '12px' }}>
+        <div className="w-full h-2 bg-[#131926] border border-slate-800/50 rounded-full overflow-hidden mb-4">
           <motion.div
             animate={{ width: `${scenes.length > 0 ? (doneCount / scenes.length) * 100 : 0}%` }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
-            style={{ height: '100%', background: doneCount === scenes.length ? 'linear-gradient(90deg,#10b981,#34d399)' : 'linear-gradient(90deg,#6c47ff,#a78bfa)', borderRadius: '99px' }}
+            className={`h-full rounded-full ${doneCount === scenes.length ? 'bg-emerald-500' : 'bg-yellow-500'}`}
           />
         </div>
 
         {/* Scene dots */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+        <div className="flex flex-wrap gap-2">
           {scenes.map((scene, i) => {
             const isDone = doneSceneIds.has(scene.sceneId);
             return (
@@ -218,15 +217,11 @@ export default function PromptExport({ scenes, characterBible, aspectRatio, proj
                 key={scene.sceneId}
                 onClick={() => toggleDone(scene.sceneId)}
                 title={`সিন ${i + 1} — ${isDone ? 'সম্পন্ন, ক্লিক করলে রিসেট হবে' : 'ক্লিক করে সম্পন্ন মার্ক করুন'}`}
-                style={{
-                  width: '32px', height: '32px', borderRadius: '10px', border: 'none',
-                  cursor: 'pointer', fontWeight: 700, fontSize: '12px',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: isDone ? '#10b98120' : 'var(--bg-secondary)',
-                  color: isDone ? '#10b981' : 'var(--text-muted)',
-                  transition: 'all 0.2s',
-                  outline: isDone ? '2px solid #10b98140' : 'none',
-                }}
+                className={`w-8 h-8 rounded-lg border-none cursor-pointer font-bold text-xs flex items-center justify-center transition-all ${
+                  isDone 
+                    ? 'bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/30' 
+                    : 'bg-[#131926] text-slate-500 hover:text-slate-300 hover:bg-[#1e293b]'
+                }`}
               >
                 {isDone ? '✓' : i + 1}
               </button>
@@ -236,28 +231,28 @@ export default function PromptExport({ scenes, characterBible, aspectRatio, proj
       </div>
 
       {/* Guide Card */}
-      <div style={{ padding: '20px 24px', borderRadius: '16px', border: '1px solid var(--border-light)', background: 'var(--bg-card)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '10px' }}>
-          <h3 style={{ fontSize: '15px', fontWeight: 700, margin: 0, color: 'var(--accent-primary)' }}>গুগল এআই স্টুডিও গাইড</h3>
+      <div className="p-5 rounded-2xl border border-slate-800 bg-[#0f172a] shadow-sm">
+        <div className="flex justify-between items-center mb-4 flex-wrap gap-3">
+          <h3 className="text-sm font-bold m-0 text-yellow-500">গুগল এআই স্টুডিও গাইড</h3>
           <a href="https://aistudio.google.com" target="_blank" rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, padding: '6px 14px', borderRadius: '8px', textDecoration: 'none', background: 'var(--gradient-brand)', color: 'white' }}>
-            এআই স্টুডিও খুলুন <ExternalLink size={13} />
+            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg text-slate-200 bg-[#1e293b] border border-slate-700 hover:bg-slate-800 hover:text-white transition-colors no-underline">
+            এআই স্টুডিও খুলুন <ExternalLink size={14} />
           </a>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', fontSize: '13px', color: 'var(--text-secondary)' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs text-slate-400">
           {['প্রম্পট কপি করুন', 'এআই স্টুডিওতে পেস্ট করুন', `রেশিও (${aspectRatio}) সিলেক্ট`, 'জেনারেট ও ডাউনলোড'].map((step, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-              <div style={{ width: '22px', height: '22px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '11px', flexShrink: 0, background: 'var(--gradient-brand)', color: '#fff' }}>
+            <div key={i} className="flex items-start gap-2 bg-[#131926] p-2.5 rounded-xl border border-slate-800/80">
+              <div className="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] shrink-0 bg-yellow-500 text-[#090d16]">
                 {['১', '২', '৩', '৪'][i]}
               </div>
-              <span>{step}</span>
+              <span className="mt-0.5">{step}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Scene Prompts List */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div className="flex flex-col gap-5">
         {scenes.map((scene, index) => {
           const isPromptCopied = copiedSceneIds.has(scene.sceneId);
           const isNarrationCopied = copiedNarrationIds.has(scene.sceneId);
@@ -272,51 +267,40 @@ export default function PromptExport({ scenes, characterBible, aspectRatio, proj
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: Math.min(index * 0.06, 0.4) }}
-              style={{
-                borderRadius: '16px',
-                position: 'relative',
-                overflow: 'hidden',
-                background: isDone ? 'var(--bg-panel)' : 'var(--bg-panel)',
-                border: isDone ? '1.5px solid #10b98150' : '1px solid var(--border)',
-                boxShadow: isDone ? '0 0 0 2px #10b98110' : 'none',
-                transition: 'border-color 0.3s, box-shadow 0.3s',
-              }}
+              className={`rounded-2xl relative overflow-hidden bg-[#0f172a] shadow-sm transition-all duration-300 ${
+                isDone 
+                  ? 'border border-emerald-500/30' 
+                  : 'border border-slate-800'
+              }`}
             >
-              {/* Top accent line — green if done, gradient if not */}
-              <div style={{
-                position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
-                background: isDone ? 'linear-gradient(90deg, #10b981, #34d399)' : 'var(--gradient-brand)',
-                transition: 'background 0.4s',
-              }} />
+              {/* Top accent line */}
+              <div className={`absolute top-0 left-0 right-0 h-1 transition-colors duration-400 ${
+                isDone ? 'bg-emerald-500' : 'bg-slate-700'
+              }`} />
 
-              <div className="p-3 sm:p-5 pb-0">
+              <div className="p-4 sm:p-6 pb-2">
                 {/* Scene header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-5">
+                  <div className="flex items-center gap-3 flex-wrap">
                     {/* Scene number badge */}
-                    <div style={{
-                      width: '34px', height: '34px', borderRadius: '10px', flexShrink: 0,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontWeight: 800, fontSize: '14px',
-                      background: isDone ? '#10b98120' : 'var(--bg-secondary)',
-                      color: isDone ? '#10b981' : 'var(--text-primary)',
-                      transition: 'all 0.3s',
-                    }}>
+                    <div className={`w-10 h-10 rounded-xl shrink-0 flex items-center justify-center font-bold text-sm transition-all ${
+                      isDone ? 'bg-emerald-500/10 text-emerald-500 ring-1 ring-emerald-500/30' : 'bg-[#131926] text-slate-300 border border-slate-800'
+                    }`}>
                       {isDone ? '✓' : index + 1}
                     </div>
                     <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)' }}>সিন {index + 1}</span>
-                        <span style={{ padding: '2px 8px', fontSize: '11px', fontWeight: 600, borderRadius: '6px', background: 'var(--bg-secondary)', color: 'var(--text-muted)' }}>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-base font-bold text-slate-200">সিন {index + 1}</span>
+                        <span className="px-2 py-0.5 text-xs font-semibold rounded-md bg-[#131926] border border-slate-800 text-slate-400">
                           {scene.durationSeconds}s
                         </span>
                         {isDone && (
-                          <span style={{ padding: '2px 10px', fontSize: '11px', fontWeight: 700, borderRadius: '99px', background: '#10b98120', color: '#10b981' }}>
+                          <span className="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
                             ✓ পেস্ট করা হয়েছে
                           </span>
                         )}
                       </div>
-                      <p style={{ fontSize: '12px', margin: '2px 0 0', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                      <p className="text-xs m-0 text-slate-400 leading-relaxed max-w-xl">
                         {scene.storySegment}
                       </p>
                     </div>
@@ -325,58 +309,47 @@ export default function PromptExport({ scenes, characterBible, aspectRatio, proj
                   {/* Done Toggle Button */}
                   <button
                     onClick={() => toggleDone(scene.sceneId)}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: '6px',
-                      padding: '7px 14px', borderRadius: '10px', border: 'none',
-                      cursor: 'pointer', fontSize: '12px', fontWeight: 600,
-                      background: isDone ? '#10b98120' : 'var(--bg-secondary)',
-                      color: isDone ? '#10b981' : 'var(--text-muted)',
-                      transition: 'all 0.25s',
-                      flexShrink: 0,
-                    }}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl border-none cursor-pointer text-xs font-semibold transition-all shrink-0 ${
+                      isDone 
+                        ? 'bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20' 
+                        : 'bg-[#131926] text-slate-400 hover:text-slate-200 hover:bg-[#1e293b]'
+                    }`}
                   >
-                    {isDone ? <CheckCircle2 size={15} /> : <Circle size={15} />}
+                    {isDone ? <CheckCircle2 size={16} /> : <Circle size={16} />}
                     {isDone ? 'পেস্ট করেছি' : 'মার্ক করুন'}
                   </button>
                 </div>
 
                 {/* Video Prompt */}
-                <div style={{ marginBottom: '14px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--accent-primary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>🎬 ভিডিও প্রম্পট</span>
+                <div className="mb-4">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-xs font-bold text-yellow-500 uppercase tracking-wider">🎬 ভিডিও প্রম্পট</span>
                     <button
                       onClick={() => handleCopyScene(scene.sceneId, scene.videoPrompt)}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: '6px',
-                        padding: '6px 14px', borderRadius: '8px', border: 'none',
-                        cursor: 'pointer', fontSize: '12px', fontWeight: 600,
-                        background: isPromptCopied ? '#10b98120' : 'var(--gradient-brand)',
-                        color: isPromptCopied ? '#10b981' : '#fff',
-                        transition: 'all 0.2s',
-                      }}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-none cursor-pointer text-xs font-bold transition-colors ${
+                        isPromptCopied 
+                          ? 'bg-emerald-500/10 text-emerald-500' 
+                          : 'bg-yellow-500 hover:bg-yellow-400 text-[#090d16]'
+                      }`}
                     >
                       {isPromptCopied ? <CheckCheck size={14} /> : <Copy size={14} />}
                       {isPromptCopied ? 'কপি হয়েছে ✓' : 'কপি প্রম্পট'}
                     </button>
                   </div>
-                  <div style={{
-                    padding: '14px 16px', borderRadius: '12px', fontSize: '13px',
-                    whiteSpace: 'pre-wrap', lineHeight: 1.7,
-                    background: isDone ? '#10b98108' : 'var(--bg-secondary)',
-                    color: 'var(--text-secondary)',
-                    border: '1px solid ' + (isDone ? '#10b98125' : 'var(--border-light)'),
-                    maxHeight: '200px', overflowY: 'auto',
-                    transition: 'background 0.3s, border-color 0.3s',
-                  }}>
+                  <div className={`p-4 rounded-xl text-sm whitespace-pre-wrap leading-relaxed transition-colors duration-300 overflow-y-auto max-h-[250px] ${
+                    isDone 
+                      ? 'bg-emerald-500/5 text-slate-300 border border-emerald-500/10' 
+                      : 'bg-[#090d16] text-slate-300 border border-slate-800/80'
+                  }`}>
                     {scene.videoPrompt}
                   </div>
                 </div>
 
                 {/* Negative Prompt */}
                 {scene.negativePrompt && (
-                  <div style={{ marginBottom: '14px' }}>
-                    <span style={{ fontSize: '11px', fontWeight: 600, display: 'block', marginBottom: '6px', color: '#ef4444', textTransform: 'uppercase' }}>⛔ Negative Prompt</span>
-                    <div style={{ padding: '10px 14px', borderRadius: '10px', fontSize: '12px', fontStyle: 'italic', background: 'rgba(239,68,68,0.05)', color: '#f87171', border: '1px solid rgba(239,68,68,0.15)' }}>
+                  <div className="mb-4">
+                    <span className="text-[11px] font-bold block mb-2 text-rose-500 uppercase">⛔ Negative Prompt</span>
+                    <div className="p-3 rounded-lg text-xs italic bg-rose-500/5 text-rose-400 border border-rose-500/10">
                       {scene.negativePrompt}
                     </div>
                   </div>
@@ -385,53 +358,59 @@ export default function PromptExport({ scenes, characterBible, aspectRatio, proj
 
               {/* Narration + Dialogue + Continuity */}
               {(scene.narration?.enabled || (scene.dialogue && scene.dialogue.length > 0) || scene.continuity) && (
-                <div style={{ padding: '0 20px 20px', marginTop: '4px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div className="px-4 sm:px-6 pb-6 pt-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="flex flex-col gap-3">
                       {scene.narration?.enabled && (
-                        <div style={{ padding: '14px', borderRadius: '12px', border: '1px solid var(--border-light)', background: 'var(--bg-card)' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>
-                              <Mic size={14} /> ন্যারেশন
+                        <div className="p-4 rounded-xl border border-slate-800 bg-[#131926]">
+                          <div className="flex justify-between items-center mb-2">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300">
+                              <Mic size={14} className="text-yellow-500" /> ন্যারেশন
                             </div>
                             <button onClick={() => handleCopyNarration(scene.sceneId, scene.narration!.text)}
-                              style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', border: 'none', background: 'transparent', color: isNarrationCopied ? '#4ade80' : 'var(--text-muted)' }}>
-                              {isNarrationCopied ? <CheckCheck size={13} /> : <Copy size={13} />} কপি
+                              className={`text-xs flex items-center gap-1 cursor-pointer border-none bg-transparent hover:text-white transition-colors ${
+                                isNarrationCopied ? 'text-emerald-500' : 'text-slate-500'
+                              }`}>
+                              {isNarrationCopied ? <CheckCheck size={14} /> : <Copy size={14} />} কপি
                             </button>
                           </div>
-                          <p style={{ fontSize: '13px', fontStyle: 'italic', margin: 0, color: 'var(--text-secondary)', lineHeight: 1.6 }}>"{scene.narration.text}"</p>
+                          <p className="text-sm italic m-0 text-slate-400 leading-relaxed">"{scene.narration.text}"</p>
                         </div>
                       )}
 
                       {scene.dialogue && scene.dialogue.length > 0 && (
-                        <div style={{ padding: '14px', borderRadius: '12px', border: '1px solid var(--border-light)', background: 'var(--bg-card)' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>
-                              <MessageCircle size={14} /> ডায়ালগ
+                        <div className="p-4 rounded-xl border border-slate-800 bg-[#131926]">
+                          <div className="flex justify-between items-center mb-3">
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300">
+                              <MessageCircle size={14} className="text-yellow-500" /> ডায়ালগ
                             </div>
                             <button onClick={() => handleCopyDialogue(scene.sceneId, dialogueText)}
-                              style={{ fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', border: 'none', background: 'transparent', color: isDialogueCopied ? '#4ade80' : 'var(--text-muted)' }}>
-                              {isDialogueCopied ? <CheckCheck size={13} /> : <Copy size={13} />} কপি
+                              className={`text-xs flex items-center gap-1 cursor-pointer border-none bg-transparent hover:text-white transition-colors ${
+                                isDialogueCopied ? 'text-emerald-500' : 'text-slate-500'
+                              }`}>
+                              {isDialogueCopied ? <CheckCheck size={14} /> : <Copy size={14} />} কপি
                             </button>
                           </div>
-                          {scene.dialogue.map((d, i) => (
-                            <div key={i} style={{ fontSize: '13px', marginBottom: '6px' }}>
-                              <span style={{ fontWeight: 600, color: 'var(--accent-primary)' }}>{d.speaker}:</span>{' '}
-                              <span style={{ color: 'var(--text-secondary)' }}>"{d.text}"</span>
-                              <span style={{ fontSize: '11px', marginLeft: '6px', opacity: 0.5 }}>({d.emotion})</span>
-                            </div>
-                          ))}
+                          <div className="flex flex-col gap-2">
+                            {scene.dialogue.map((d, i) => (
+                              <div key={i} className="text-sm">
+                                <span className="font-bold text-yellow-500/90">{d.speaker}:</span>{' '}
+                                <span className="text-slate-300">"{d.text}"</span>
+                                <span className="text-[10px] ml-1.5 opacity-50 text-slate-400">({d.emotion})</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
 
                     {scene.continuity && (
-                      <div style={{ padding: '14px', borderRadius: '12px', border: '1px solid var(--border-light)', background: 'var(--bg-card)', height: 'fit-content' }}>
-                        <h5 style={{ fontSize: '13px', fontWeight: 600, marginBottom: '10px', marginTop: 0, color: 'var(--text-primary)' }}>কন্টিনিউটি নোটস</h5>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px', color: 'var(--text-secondary)' }}>
-                          {scene.continuity.previousScene && <div><span style={{ fontWeight: 600 }}>আগের:</span> {scene.continuity.previousScene}</div>}
-                          <div><span style={{ fontWeight: 600 }}>বর্তমান:</span> {scene.continuity.currentScene}</div>
-                          {scene.continuity.nextScene && <div><span style={{ fontWeight: 600 }}>পরবর্তী:</span> {scene.continuity.nextScene}</div>}
+                      <div className="p-4 rounded-xl border border-slate-800 bg-[#131926] h-fit">
+                        <h5 className="text-xs font-bold mb-3 mt-0 text-slate-300">কন্টিনিউটি নোটস</h5>
+                        <div className="flex flex-col gap-2 text-xs text-slate-400">
+                          {scene.continuity.previousScene && <div><span className="font-bold text-slate-300">আগের:</span> {scene.continuity.previousScene}</div>}
+                          <div><span className="font-bold text-slate-300">বর্তমান:</span> {scene.continuity.currentScene}</div>
+                          {scene.continuity.nextScene && <div><span className="font-bold text-slate-300">পরবর্তী:</span> {scene.continuity.nextScene}</div>}
                         </div>
                       </div>
                     )}

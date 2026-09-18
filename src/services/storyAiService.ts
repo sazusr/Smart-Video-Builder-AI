@@ -1,5 +1,5 @@
 import type { StoryInput, GeneratedStory, CharacterProfile, LocationProfile, VisualStyleProfile, AudioPlan, StoryScene, StoryDuration, VisualStyle, StoryGenre, VoiceMode, StoryLanguage, AspectRatio } from '../types/storyVideo';
-import { DURATION_SCENE_MAP } from '../types/storyVideo';
+import { DURATION_SCENE_MAP, getDurationConfig } from '../types/storyVideo';
 
 const GEMINI_MODEL = 'gemini-3.6-flash';
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
@@ -66,11 +66,15 @@ export async function generateStoryIdea(
 Generate ONE unique, captivating, and high-CTR video story hook/premise in the category: "${category}".
 Language: ${langName}.
 
-Guidelines:
+    Guidelines:
 - 2 to 3 sentences only.
 - Start with an irresistible curiosity hook or mysterious event.
+- If it's a Bangladeshi Documentary / History, focus on intriguing mysteries from Sundarbans, ancient Bengali history, 1971 liberation war untold heroism, or historical folklore.
 - If it's a US Documentary / True Crime / Business Scandal / Area 51, make it sound like an intense MagnatesMedia or Netflix true crime documentary.
+- If it's Sad / Emotional Story, make it deeply touching, evoking tears and empathy (e.g. parents' sacrifices, silent struggles, lost loved ones).
+- If it's Motivational / Success Story, make it an incredible real-life rags-to-riches, resilience, or triumph against all odds.
 - If it's Comedy / Funny, make it hilarious, witty, and deeply relatable.
+- If it's Romance / Love Story, make it passionate, heartwarming, or poignantly bittersweet.
 - If it's Horror, make it chilling and spine-tingling.
 - Output ONLY the 2-3 sentence story premise text. No quotes, no intro, no emojis, no labels.`;
 
@@ -263,7 +267,7 @@ export async function generateSceneBreakdown(
   locationBible: LocationProfile[],
   visualStyleBible: VisualStyleProfile
 ): Promise<StoryScene[]> {
-  const { minScenes, maxScenes } = DURATION_SCENE_MAP[duration];
+  const { minScenes, maxScenes } = getDurationConfig(duration);
   
   const prompt = `You are an expert Director. Break down this story into sequential scenes.
 Create between ${minScenes} and ${maxScenes} scenes.

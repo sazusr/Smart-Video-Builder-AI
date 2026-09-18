@@ -2,12 +2,15 @@
 
 // User Input Types
 export type StoryLanguage = 'bangla' | 'english' | 'banglish';
-export type StoryDuration = '1min' | '2min' | '3min' | '4min' | '5min';
+export type StoryDuration = '20s' | '30s' | '1min' | '2min' | '3min' | '4min' | '5min' | string;
 export type StoryGenre = 
   | 'auto' 
+  | 'bd_documentary'
   | 'us_documentary' 
   | 'true_crime' 
   | 'scandal_business' 
+  | 'emotional_story'
+  | 'success_story'
   | 'mystery' 
   | 'horror' 
   | 'comedy' 
@@ -210,20 +213,47 @@ export const WIZARD_STEPS: { key: WizardStep; label: string; icon: string }[] = 
 ];
 
 // Duration to approximate scene count mapping
-export const DURATION_SCENE_MAP: Record<StoryDuration, { minScenes: number; maxScenes: number; totalSeconds: number }> = {
-  '1min': { minScenes: 5, maxScenes: 8, totalSeconds: 60 },
+export const DURATION_SCENE_MAP: Record<string, { minScenes: number; maxScenes: number; totalSeconds: number }> = {
+  '20s':  { minScenes: 2,  maxScenes: 4,  totalSeconds: 20 },
+  '30s':  { minScenes: 3,  maxScenes: 5,  totalSeconds: 30 },
+  '1min': { minScenes: 5,  maxScenes: 8,  totalSeconds: 60 },
   '2min': { minScenes: 10, maxScenes: 16, totalSeconds: 120 },
   '3min': { minScenes: 16, maxScenes: 24, totalSeconds: 180 },
   '4min': { minScenes: 22, maxScenes: 32, totalSeconds: 240 },
   '5min': { minScenes: 28, maxScenes: 40, totalSeconds: 300 },
 };
 
+export function getDurationConfig(duration: string): { minScenes: number; maxScenes: number; totalSeconds: number } {
+  if (DURATION_SCENE_MAP[duration]) {
+    return DURATION_SCENE_MAP[duration];
+  }
+  const secMatch = duration.match(/^(\d+)\s*s/i);
+  if (secMatch) {
+    const sec = parseInt(secMatch[1], 10);
+    const minS = Math.max(2, Math.floor(sec / 8));
+    const maxS = Math.max(3, Math.ceil(sec / 4));
+    return { minScenes: minS, maxScenes: maxS, totalSeconds: sec };
+  }
+  const minMatch = duration.match(/^(\d+)\s*m/i);
+  if (minMatch) {
+    const m = parseInt(minMatch[1], 10);
+    const sec = m * 60;
+    const minS = Math.max(3, Math.floor(sec / 8));
+    const maxS = Math.max(4, Math.ceil(sec / 4));
+    return { minScenes: minS, maxScenes: maxS, totalSeconds: sec };
+  }
+  return { minScenes: 5, maxScenes: 8, totalSeconds: 60 };
+}
+
 // Genre display labels
 export const GENRE_LABELS: Record<StoryGenre, string> = {
   auto: 'Auto (AI নির্বাচন করবে)',
+  bd_documentary: '🇧🇩 বাংলাদেশি ডকুমেন্টারি ও ইতিহাস',
   us_documentary: '🇺🇸 US Documentary',
   true_crime: '🕵️ True Crime & Mystery',
   scandal_business: '🏢 Business & Scandals',
+  emotional_story: '😢 বাস্তব জীবনের দুঃখ ও কষ্টের গল্প',
+  success_story: '💪 অনুপ্রেরণা ও সাফল্যের গল্প',
   documentary: '🎥 সাধারণ ডকুমেন্টারি',
   drama: 'নাটকীয় (Drama)',
   thriller: 'থ্রিলার (Thriller)',
@@ -232,7 +262,7 @@ export const GENRE_LABELS: Record<StoryGenre, string> = {
   comedy: 'কমেডি ও হাসির গল্প',
   adventure: 'অ্যাডভেঞ্চার',
   action: 'অ্যাকশন',
-  romantic: 'রোমান্টিক',
+  romantic: 'রোমান্টিক ও ভালোবাসা',
   educational: 'শিক্ষামূলক ও জ্ঞান',
   motivational: 'অনুপ্রেরণামূলক',
 };
